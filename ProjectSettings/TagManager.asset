@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Hazard
   - Target
+  - TargetCrit
   layers:
   - Default
   - TransparentFX
@@ -13,8 +14,8 @@ TagManager:
   - Ground
   - Water
   - UI
-  - 
-  - 
+  - Target
+  - Enemy
   - 
   - 
   - 

@@ -20,7 +20,6 @@ public class PlayerScript : MonoBehaviour
     public float groundDrag;
     public float playerHeight;
     private bool grounded;
-    private bool jumping;
     private float jumpCD = .2f;
     public float jumpCDMax = .2f;
     public LayerMask groundLayer;
@@ -89,10 +88,10 @@ public class PlayerScript : MonoBehaviour
         moveJump = Input.GetButtonDown("Jump");
         moveJumpHold = Input.GetAxisRaw("Jump");
 
-        // Stop empty jump calls
-        if(moveJump && !jumping)
+        // Jumping stuff!
+        if(moveJump)
         {
-            FixedUpdate();
+            playerJump();
         }
     }
 
@@ -139,17 +138,18 @@ public class PlayerScript : MonoBehaviour
         rb.useGravity = !slopeHandler();
 
         rb.AddForce(moveDir.normalized * speed * rb.drag, ForceMode.Force);
+    }
 
+    void playerJump()
+    {
         // Jumping
         if(jumps > 0 && moveJump)
         {
-            jumping = true;
             jumps -= 1;
             jumpCD = 0;
             rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse); 
             ui.updateUI();
-            jumping = false;
         }
     }
 
