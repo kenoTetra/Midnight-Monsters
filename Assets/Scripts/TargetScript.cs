@@ -4,11 +4,26 @@ using UnityEngine;
 
 public class TargetScript : MonoBehaviour, IDamagable
 {
+    public int health = 300;
     public GameObject hitNumber;
+    public GameObject hitSpawn;
 
-    public void Damage(float damage)
+    public void Damage(float damage, bool crit, float critHitMult)
     {
-        GameObject curHitNumber = Instantiate(hitNumber, transform.position, Quaternion.identity);
-        curHitNumber.GetComponent<HitNumberScript>().updateDamageText(damage);
+        // Damage target
+        if(crit)
+            health -= (int)(damage * critHitMult);
+        
+        else
+            health -= (int)damage;
+        
+        if(health <= 0)
+        {
+            Destroy(this.gameObject);
+        }
+
+        // Hit numbers
+        GameObject curHitNumber = Instantiate(hitNumber, hitSpawn.transform.position, Quaternion.identity);
+        curHitNumber.GetComponent<HitNumberScript>().updateDamageText(damage, crit, critHitMult);
     }
 }

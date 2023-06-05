@@ -6,7 +6,7 @@ TagManager:
   tags:
   - Hazard
   - Target
-  - TargetCrit
+  - Crit
   layers:
   - Default
   - TransparentFX

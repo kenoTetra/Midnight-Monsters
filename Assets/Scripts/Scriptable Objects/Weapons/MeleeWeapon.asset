@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f2afd78300ee1734fa879d031d6c0e8b, type: 3}
-  m_Name: Pistol
+  m_Name: MeleeWeapon
   m_EditorClassIdentifier: 
-  name: Pistol
-  damage: 15
-  critHitMult: 1.5
-  maxDistance: 250
+  name: Melee
+  damage: 150
+  critHitMult: 2
+  maxDistance: 3
   automatic: 0
   automaticFireRate: 0
-  singleShotDelay: 0.15
+  singleShotDelay: 0.4

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -33,9 +34,17 @@ public class PlayerScript : MonoBehaviour
     [Space(5)]
     private RaycastHit slopeHit;
 
+    [Header("Health")]
+    public int maxHealth = 100;
+    public int health = 100;
+
     [Header("Checkpoints")]
     public Vector3 startPoint;
     public Vector3 checkpoint;
+    [Space(5)]
+
+    [Header("Weapons")]
+    public List<GameObject> weaponList = new List<GameObject>();
 
     [Header("References")]
     [HideInInspector]
@@ -57,6 +66,14 @@ public class PlayerScript : MonoBehaviour
     {
         inputs();
         groundedChecks();
+        changeWeapons();
+
+        // death check
+        if(health <= 0)
+        {
+            Scene scene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(scene.name);
+        }
     }
 
     void FixedUpdate()
@@ -69,14 +86,13 @@ public class PlayerScript : MonoBehaviour
         if(col.tag == "Hazard")
         {
             if(checkpoint != null)
-            {
                 transform.position = checkpoint;
-            }
 
             else
-            {
                 transform.position = startPoint;
-            }
+
+            health -= 25;
+            ui.updateUI();
         }
     }
 
@@ -101,7 +117,7 @@ public class PlayerScript : MonoBehaviour
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.15f, groundLayer);
 
         // Reset jumps and whatnot.
-        if(grounded && jumpCD >= jumpCDMax)
+        if(grounded && jumpCD >= jumpCDMax && rb.drag != groundDrag)
         {
             rb.drag = groundDrag;
             jumps = maxJumps;
@@ -167,5 +183,28 @@ public class PlayerScript : MonoBehaviour
     private Vector3 getSlopeMoveDir()
     {
         return Vector3.ProjectOnPlane(moveDir, slopeHit.normal).normalized;
+    }
+
+    void changeWeapons()
+    {
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            foreach(GameObject weapon in weaponList)
+            {
+                weapon.SetActive(false);
+            }
+
+            weaponList[0].SetActive(true);
+        }
+
+        if(Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            foreach(GameObject weapon in weaponList)
+            {
+                weapon.SetActive(false);
+            }
+
+            weaponList[1].SetActive(true);
+        }
     }
 }

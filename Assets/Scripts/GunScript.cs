@@ -7,10 +7,12 @@ public class GunScript : MonoBehaviour
     [Header("References")]
     public GunData gunData;
     public Transform muzzle;
+    public Transform bulletPos;
     [Space(5)]
 
     [Header("Shooting Data")]
     public float lastShotTime;
+    public bool critHit;
 
     void Start()
     {
@@ -31,7 +33,7 @@ public class GunScript : MonoBehaviour
         }
 
         lastShotTime += Time.deltaTime;
-        Debug.DrawRay(muzzle.position, muzzle.forward, Color.red);
+        Debug.DrawRay(bulletPos.position, bulletPos.forward, Color.red);
     }
 
     // Single shot delay OR shots fired every second divided by a second (ala, 600 rpm is 10rps, which is .1s between shots)
@@ -41,10 +43,23 @@ public class GunScript : MonoBehaviour
     {
         if(canShoot())
         {
-            if(Physics.Raycast(muzzle.position, muzzle.forward, out RaycastHit hitInfo, gunData.maxDistance))
+            if(Physics.Raycast(bulletPos.position, bulletPos.forward, out RaycastHit hitInfo, gunData.maxDistance))
             {
-                IDamagable damageable = hitInfo.transform.GetComponent<IDamagable>();
-                damageable?.Damage(gunData.damage);
+                if(hitInfo.transform.gameObject.tag == "Crit")
+                {
+                    critHit = true;
+                    IDamagable damageable = hitInfo.transform.GetComponent<CritSpotScript>().target;
+                    damageable?.Damage(gunData.damage, critHit, gunData.critHitMult);
+                    Debug.Log("Hit a critical!");
+                }
+                
+                else
+                {
+                    critHit = false;
+                    IDamagable damageable = hitInfo.transform.GetComponent<IDamagable>();
+                    damageable?.Damage(gunData.damage, critHit, gunData.critHitMult);
+                }
+                
             }
 
             lastShotTime = 0;

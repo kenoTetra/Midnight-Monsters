@@ -9,6 +9,7 @@ public class GunData : ScriptableObject
     [Header("Stats")]
     public new string name;
     public float damage;
+    public float critHitMult;
     public float maxDistance;
     public bool automatic;
     public int automaticFireRate;

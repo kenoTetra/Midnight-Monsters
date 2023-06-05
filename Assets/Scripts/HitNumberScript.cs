@@ -15,7 +15,10 @@ public class HitNumberScript : MonoBehaviour
     public float timeToDestroy = 2f;
     private float destroyCurTime;
     public float randomBounce = 1f;
-    public Color damageColor = Color.red;
+    public Color damageColor;
+    public Color normalColor = Color.red;
+    public Color critColor = Color.yellow;
+    public bool critHit;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +26,12 @@ public class HitNumberScript : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         target = GameObject.FindWithTag("Player");
         hitNumber = GetComponentInChildren<TMP_Text>();
+
+        if(critHit)
+            damageColor = critColor;
+        
+        else
+            damageColor = normalColor;
 
         // Shoots it off in a random direction kinda cute like :3
         rb.AddForce(new Vector3(Random.Range(-randomBounce, randomBounce), 1.5f, Random.Range(-randomBounce, randomBounce)), ForceMode.Impulse);
@@ -46,9 +55,15 @@ public class HitNumberScript : MonoBehaviour
         }
     }
 
-    public void updateDamageText(float damage)
+    public void updateDamageText(float damage, bool crit, float critHitMult)
     {
-        hitNumber = GetComponentInChildren<TMP_Text>();
-        hitNumber.text = "-" + damage.ToString();
+        critHit = crit;
+        Start();
+
+        if(crit)
+            hitNumber.text = "-" + (damage * critHitMult).ToString();
+
+        else
+            hitNumber.text = "-" + damage.ToString();
     }
 }

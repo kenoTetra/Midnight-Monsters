@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIScript : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class UIScript : MonoBehaviour
     public Color jumpFull;
     public Color jumpEmpty;
     public List<Image> jumps = new List<Image>();
+    public TMP_Text healthText;
+    public Image healthBar;
     [Space(5)]
 
     [Header("References")]
@@ -28,5 +31,8 @@ public class UIScript : MonoBehaviour
                 jumps[i].color = jumpFull;
             }
         }
+
+        healthText.text = ps.health.ToString();
+        healthBar.fillAmount = (float)ps.health/(float)ps.maxHealth;
     }
 }
