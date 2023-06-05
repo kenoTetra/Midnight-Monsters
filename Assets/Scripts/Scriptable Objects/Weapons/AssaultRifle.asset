@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2afd78300ee1734fa879d031d6c0e8b, type: 3}
   m_Name: AssaultRifle
   m_EditorClassIdentifier: 
-  name: 
-  damage: 0
-  critHitMult: 0
-  maxDistance: 0
-  automatic: 0
-  automaticFireRate: 0
+  name: Assault Rifle
+  damage: 2.5
+  critHitMult: 2
+  maxDistance: 100
+  automatic: 1
+  automaticFireRate: 600
   singleShotDelay: 0
