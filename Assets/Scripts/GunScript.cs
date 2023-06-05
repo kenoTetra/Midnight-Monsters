@@ -37,7 +37,7 @@ public class GunScript : MonoBehaviour
     }
 
     // Single shot delay OR shots fired every second divided by a second (ala, 600 rpm is 10rps, which is .1s between shots)
-    private bool canShoot() => lastShotTime > gunData.singleShotDelay || lastShotTime > 1f / (gunData.automaticFireRate / 60f) && gunData.automatic;
+    private bool canShoot() => lastShotTime > gunData.singleShotDelay && !gunData.automatic || lastShotTime > 1f / (gunData.automaticFireRate / 60f) && gunData.automatic;
 
     void shoot()
     {

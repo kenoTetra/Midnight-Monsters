@@ -189,22 +189,27 @@ public class PlayerScript : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Alpha1))
         {
-            foreach(GameObject weapon in weaponList)
-            {
-                weapon.SetActive(false);
-            }
-
-            weaponList[0].SetActive(true);
+            newWeapon(1);
         }
 
         if(Input.GetKeyDown(KeyCode.Alpha2))
         {
-            foreach(GameObject weapon in weaponList)
-            {
-                weapon.SetActive(false);
-            }
-
-            weaponList[1].SetActive(true);
+            newWeapon(2);
         }
+
+        if(Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            newWeapon(3);
+        }
+    }
+
+    void newWeapon(int alpha)
+    {
+        foreach(GameObject weapon in weaponList)
+        {
+            weapon.SetActive(false);
+        }
+
+        weaponList[alpha-1].SetActive(true);
     }
 }
