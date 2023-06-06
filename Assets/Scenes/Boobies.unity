@@ -2093,6 +2093,10 @@ MonoBehaviour:
   jumpForce: 7.5
   jumps: 2
   maxJumps: 2
+  fallShakeMagnitude: 0.4
+  speedTillShake: -2
+  wallDistance: 0.5
+  minimumJumpHeight: 1.5
   maxSlopeAngle: 45
   maxHealth: 100
   health: 100
@@ -3626,7 +3630,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: e78a36b493728ee48b0dce46bf956379, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_Volume: 0.25
   m_Pitch: 1
   Loop: 0
   Mute: 0
