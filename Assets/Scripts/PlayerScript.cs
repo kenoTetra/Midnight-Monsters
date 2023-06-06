@@ -27,7 +27,18 @@ public class PlayerScript : MonoBehaviour
     public float jumpForce = 5f;
     public int jumps = 2;
     public int maxJumps = 2;
+    public float fallShakeMagnitude = .4f;
+    public float speedTillShake = -2f;
     [Space(5)]
+
+    [Header("Wallrunning")]
+    public float wallDistance = .5f;
+    public float minimumJumpHeight = 1.5f;
+    private bool wallLeft;
+    private bool canWallrun()
+    {
+        return !Physics.Raycast(transform.position, Vector3.down, minimumJumpHeight);
+    }
 
     [Header("Slope Handling")]
     public float maxSlopeAngle;
@@ -45,17 +56,28 @@ public class PlayerScript : MonoBehaviour
 
     [Header("Weapons")]
     public List<GameObject> weaponList = new List<GameObject>();
+    [Space(5)]
+
+    [Header("Sounds")]
+    public List<AudioClip> jumpSounds = new List<AudioClip>();
+    public List<AudioClip> landSounds = new List<AudioClip>();
+    public List<AudioClip> stepSounds = new List<AudioClip>();
+    public AudioSource audioSource;
+    private float lastFootstepTime;
+    public float timeBetweenFootsteps = .2f; 
 
     [Header("References")]
     [HideInInspector]
     public Rigidbody rb;
     [HideInInspector]
     public UIScript ui;
+    private CameraScript cameraScript;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         ui = GetComponentInChildren<UIScript>();
+        cameraScript = GetComponentInChildren<CameraScript>();
         orientation = GetComponent<Transform>();
         rb.freezeRotation = true;
         startPoint = transform.position;
@@ -67,6 +89,20 @@ public class PlayerScript : MonoBehaviour
         inputs();
         groundedChecks();
         changeWeapons();
+        wallRun();
+
+        // footstep sounds
+        if(rb.velocity.magnitude > 0.2f && lastFootstepTime > timeBetweenFootsteps && jumps == maxJumps)
+        {
+            audioSource.PlayOneShot(stepSounds[Random.Range(0, landSounds.Count - 1)], 1f);
+            lastFootstepTime = 0f;
+        }
+
+        else if(grounded)
+        {
+            // Add with the current speed of the player divided by normal max speed. incase you're zoomin'
+            lastFootstepTime += Time.deltaTime * rb.velocity.magnitude/speed;
+        }
 
         // death check
         if(health <= 0)
@@ -120,7 +156,14 @@ public class PlayerScript : MonoBehaviour
         if(grounded && jumpCD >= jumpCDMax && rb.drag != groundDrag)
         {
             rb.drag = groundDrag;
+
+            // Audio for landing
+            if(!audioSource.isPlaying && jumps < maxJumps)
+                audioSource.PlayOneShot(landSounds[Random.Range(0, landSounds.Count - 1)], 1f);
+
             jumps = maxJumps;
+
+            // Reset jump count visuals   
             ui.updateUI();
         }
 
@@ -153,6 +196,7 @@ public class PlayerScript : MonoBehaviour
         // No gravity on slopes to prevent sliding.
         rb.useGravity = !slopeHandler();
 
+        // Apply the speed! Yay!
         rb.AddForce(moveDir.normalized * speed * rb.drag, ForceMode.Force);
     }
 
@@ -165,6 +209,11 @@ public class PlayerScript : MonoBehaviour
             jumpCD = 0;
             rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse); 
+
+            // Play jump sounds
+            audioSource.PlayOneShot(jumpSounds[Random.Range(0, landSounds.Count - 1)], 1f);
+
+            // Update jump counter visuals
             ui.updateUI();
         }
     }
@@ -211,5 +260,23 @@ public class PlayerScript : MonoBehaviour
         }
 
         weaponList[alpha-1].SetActive(true);
+    }
+
+    void checkWall()
+    {
+        wallLeft = Physics.Raycast(transform.position, -orientation.right, wallDistance);
+    }
+
+    void wallRun()
+    {
+        checkWall();
+        
+        if(canWallrun())
+        {
+            if(wallLeft)
+            {
+                Debug.Log("You can wallrun my guy");
+            }
+        }
     }
 }

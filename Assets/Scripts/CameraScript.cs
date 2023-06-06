@@ -10,10 +10,12 @@ public class CameraScript : MonoBehaviour
     private float rotateY;
 
     public Transform orientation;
+    private PlayerScript ps;
 
     // Start is called before the first frame update
     void Start()
     {
+        ps = GameObject.FindWithTag("Player").GetComponent<PlayerScript>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -29,6 +31,5 @@ public class CameraScript : MonoBehaviour
         transform.localEulerAngles = Vector3.right * rotateY;
 
         orientation.Rotate(Vector3.up * mouseX);
-
     }
 }
