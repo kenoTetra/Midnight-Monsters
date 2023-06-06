@@ -16,10 +16,12 @@ public class GunScript : MonoBehaviour
 
     // References
     Animator animator;
+    AudioSource audioSource;
 
     void Start()
     {
         animator = GameObject.FindWithTag("Player").GetComponent<Animator>();
+        audioSource = GameObject.FindWithTag("GunSound").GetComponent<AudioSource>();
         lastShotTime = gunData.singleShotDelay;
     }
 
@@ -74,5 +76,8 @@ public class GunScript : MonoBehaviour
     private void OnGunShot()
     {
         animator.SetBool("Fire", true);
+
+        if(gunData.name != "Melee" || !audioSource.isPlaying)
+            audioSource.PlayOneShot(gunData.fireSounds[Random.Range(0, gunData.fireSounds.Count - 1)], .5f);
     }
 }

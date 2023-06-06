@@ -19,3 +19,5 @@ MonoBehaviour:
   automatic: 1
   automaticFireRate: 600
   singleShotDelay: 0
+  fireSounds:
+  - {fileID: 8300000, guid: 34b439bf70b80a6409eadecc6be92d68, type: 3}

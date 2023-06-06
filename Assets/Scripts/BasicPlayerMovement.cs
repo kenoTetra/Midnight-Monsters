@@ -13,6 +13,7 @@ public class BasicPlayerMovement : MonoBehaviour
 
     [Header("Movement")]
     public float speed = 10f;
+    [SerializeField] private float artificalGravity = -7.5f;
 
     // Slope Handling
     [SerializeField] private float maxSlopeAngle;
@@ -36,6 +37,7 @@ public class BasicPlayerMovement : MonoBehaviour
     [HideInInspector] public UIScript ui;
     PlayerCharges pc;
     PlayerSliding ps;
+    PlayerWallrun pr;
     
     // Start is called before the first frame update
     void Start()
@@ -45,6 +47,7 @@ public class BasicPlayerMovement : MonoBehaviour
         ui = GetComponentInChildren<UIScript>();
         pc = GetComponent<PlayerCharges>();
         ps = GetComponent<PlayerSliding>();
+        pr = GetComponent<PlayerWallrun>();
         audioSource = GetComponent<AudioSource>();
         orientation = GetComponent<Transform>();
         rb.freezeRotation = true;
@@ -110,8 +113,14 @@ public class BasicPlayerMovement : MonoBehaviour
         if(grounded)
             rb.drag = groundDrag;
 
+        // Increase downwards gravity in air.
         else
+        {
             rb.drag = 1;
+
+            if(!pr.isWallRunning)
+                rb.AddForce(Vector3.down * Mathf.Abs(artificalGravity), ForceMode.Force);
+        }
 
     }
 

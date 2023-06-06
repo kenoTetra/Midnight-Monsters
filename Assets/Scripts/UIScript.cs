@@ -10,9 +10,17 @@ public class UIScript : MonoBehaviour
     [SerializeField] private Color chargeFull;
     [SerializeField] private Color chargeEmpty;
     [SerializeField] private List<Image> charges = new List<Image>();
+    [Space(5)]
+
+    [Header("Health Information")]
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private Image healthBar;
     [Space(5)]
+
+    [Header("Weapon UI")]
+    [SerializeField] private List<Image> weapons = new List<Image>();
+    [SerializeField] private Color activeWeaponColor;
+    [SerializeField] private Color inactiveWeaponColor;
 
     [Header("References")]
     PlayerCharges pc;
@@ -41,5 +49,18 @@ public class UIScript : MonoBehaviour
         
         healthText.text = ps.health.ToString();
         healthBar.fillAmount = (float)ps.health/(float)ps.maxHealth;
+    }
+
+    public void FadeOtherWeapons(int weaponActive)
+    {
+        for(int i = 0; i < weapons.Count; i++)
+        {
+            weapons[i].color = inactiveWeaponColor;
+            weapons[i].gameObject.GetComponentInChildren<TMP_Text>().color = inactiveWeaponColor;
+
+        }
+
+        weapons[weaponActive-1].color = activeWeaponColor;
+        weapons[weaponActive-1].gameObject.GetComponentInChildren<TMP_Text>().color = activeWeaponColor;
     }
 }

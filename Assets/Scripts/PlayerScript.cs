@@ -87,5 +87,6 @@ public class PlayerScript : MonoBehaviour
         }
 
         weaponList[alpha-1].SetActive(true);
+        ui.FadeOtherWeapons(alpha);
     }
 }
