@@ -23,6 +23,8 @@ public class PauseHandler : MonoBehaviour
             Destroy(spawnedPausePrefab);
             Time.timeScale = 1.0f;
             paused = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 }

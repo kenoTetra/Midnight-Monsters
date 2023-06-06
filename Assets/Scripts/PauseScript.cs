@@ -27,7 +27,7 @@ public class PauseScript : MonoBehaviour
     {
         Time.timeScale = 1.0f;
         pauseHandler.paused = false;
-        Cursor.lockState = CursorLockMode.None;
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         Destroy(this.gameObject);
     }

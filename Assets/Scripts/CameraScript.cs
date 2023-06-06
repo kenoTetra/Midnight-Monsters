@@ -19,6 +19,7 @@ public class CameraScript : MonoBehaviour
 
     public Transform orientation;
     private PlayerScript ps;
+    private PlayerWallrun pr;
     private Camera cam;
     private PauseHandler pauseHandler;
 
@@ -26,6 +27,7 @@ public class CameraScript : MonoBehaviour
     void Start()
     {
         ps = GameObject.FindWithTag("Player").GetComponent<PlayerScript>();
+        pr = GameObject.FindWithTag("Player").GetComponent<PlayerWallrun>();
         pauseHandler = GameObject.FindWithTag("Player").GetComponent<PauseHandler>();
         cam = GetComponent<Camera>();
         wallRunfov = fov + 10f;
@@ -49,14 +51,14 @@ public class CameraScript : MonoBehaviour
 
             // Funny camera effects when wallrunning.
             
-            if(ps.isWallRunning)
+            if(pr.isWallRunning)
             {
                 cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, wallRunfov, wallEffectTime * Time.deltaTime);
 
-                if(ps.wallLeft)
+                if(pr.wallLeft)
                     tilt = Mathf.Lerp(tilt, -camTilt, wallEffectTime * Time.deltaTime);
 
-                else if(ps.wallRight)
+                else if(pr.wallRight)
                     tilt = Mathf.Lerp(tilt, camTilt, wallEffectTime * Time.deltaTime);
             }
 

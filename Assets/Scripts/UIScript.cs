@@ -7,21 +7,28 @@ using TMPro;
 public class UIScript : MonoBehaviour
 {
     [Header("Charge Markers")]
-    public Color chargeFull;
-    public Color chargeEmpty;
-    public List<Image> charges = new List<Image>();
-    public TMP_Text healthText;
-    public Image healthBar;
+    [SerializeField] private Color chargeFull;
+    [SerializeField] private Color chargeEmpty;
+    [SerializeField] private List<Image> charges = new List<Image>();
+    [SerializeField] private TMP_Text healthText;
+    [SerializeField] private Image healthBar;
     [Space(5)]
 
     [Header("References")]
-    public PlayerScript ps;
+    PlayerCharges pc;
+    PlayerScript ps;
+
+    void Start()
+    {
+        ps = GameObject.FindWithTag("Player").GetComponent<PlayerScript>();
+        pc = GameObject.FindWithTag("Player").GetComponent<PlayerCharges>();
+    }
 
     public void updateUI()
     {
         for(int i = 0; i < (charges.Count); i++)
         {
-            if(i + 1 > ps.charges)
+            if(i + 1 > pc.charges)
             {
                 charges[i].color = chargeEmpty;
             }
@@ -31,7 +38,7 @@ public class UIScript : MonoBehaviour
                 charges[i].color = chargeFull;
             }
         }
-
+        
         healthText.text = ps.health.ToString();
         healthBar.fillAmount = (float)ps.health/(float)ps.maxHealth;
     }

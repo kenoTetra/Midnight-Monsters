@@ -14,8 +14,12 @@ public class GunScript : MonoBehaviour
     public float lastShotTime;
     public bool critHit;
 
+    // References
+    Animator animator;
+
     void Start()
     {
+        animator = GameObject.FindWithTag("Player").GetComponent<Animator>();
         lastShotTime = gunData.singleShotDelay;
     }
 
@@ -24,12 +28,12 @@ public class GunScript : MonoBehaviour
     {
         if(gunData.automatic && Input.GetAxisRaw("Fire1") > 0)
         {
-            shoot();
+            Shoot();
         }
 
         else if(Input.GetButtonDown("Fire1"))
         {
-            shoot();
+            Shoot();
         }
 
         lastShotTime += Time.deltaTime;
@@ -37,11 +41,11 @@ public class GunScript : MonoBehaviour
     }
 
     // Single shot delay OR shots fired every second divided by a second (ala, 600 rpm is 10rps, which is .1s between shots)
-    private bool canShoot() => lastShotTime > gunData.singleShotDelay && !gunData.automatic || lastShotTime > 1f / (gunData.automaticFireRate / 60f) && gunData.automatic;
+    private bool CanShoot() => lastShotTime > gunData.singleShotDelay && !gunData.automatic || lastShotTime > 1f / (gunData.automaticFireRate / 60f) && gunData.automatic;
 
-    void shoot()
+    void Shoot()
     {
-        if(canShoot())
+        if(CanShoot())
         {
             if(Physics.Raycast(bulletPos.position, bulletPos.forward, out RaycastHit hitInfo, gunData.maxDistance))
             {
@@ -69,6 +73,6 @@ public class GunScript : MonoBehaviour
 
     private void OnGunShot()
     {
-
+        animator.SetBool("Fire", true);
     }
 }
