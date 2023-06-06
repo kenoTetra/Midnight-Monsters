@@ -287,11 +287,30 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &49115344 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1458508998571350184, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
+  m_PrefabInstance: {fileID: 922562167}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &49115351 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1458508998571350167, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
   m_PrefabInstance: {fileID: 922562167}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &49115352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49115344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce1fa482aed5e87449e8ee4be9323e1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pausePrefab: {fileID: 7415614053388189089, guid: 50aaa008827388d46a1b80fd16ce0db5, type: 3}
+  paused: 0
 --- !u!43 &133222739
 Mesh:
   m_ObjectHideFlags: 0
@@ -7196,7 +7215,7 @@ PrefabInstance:
       objectReference: {fileID: 1260394526}
     - target: {fileID: 1458508997005955611, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
       propertyPath: m_VersionIndex
-      value: 3284
+      value: 3320
       objectReference: {fileID: 0}
     - target: {fileID: 1458508997005955614, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
       propertyPath: m_Mesh
@@ -7235,6 +7254,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1458508998571350166, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
+      propertyPath: speed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458508998571350166, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
+      propertyPath: slideForce
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458508998571350166, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
+      propertyPath: slideYScale
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458508998571350166, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
       propertyPath: wallDistance
       value: 0.75
       objectReference: {fileID: 0}
@@ -7245,6 +7276,10 @@ PrefabInstance:
     - target: {fileID: 1458508998571350166, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
       propertyPath: minimumJumpHeight
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458508998571350166, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
+      propertyPath: timeUntilSlideDecay
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1458508998571350167, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
       propertyPath: m_RootOrder
@@ -7313,6 +7348,22 @@ PrefabInstance:
     - target: {fileID: 1458508998777476703, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
       propertyPath: wallRunfovTime
       value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 8726425076827269080, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8726425076827269080, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8726425076827269080, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8726425076827269080, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9936c26316f69d54ba164d6dbaa7f7d9, type: 3}

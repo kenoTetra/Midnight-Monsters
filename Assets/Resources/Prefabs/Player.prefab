@@ -2505,6 +2505,8 @@ MonoBehaviour:
   wallJumpForce: 6
   isWallRunning: 0
   maxSlopeAngle: 45
+  slideForce: 12.5
+  slideYScale: 0.5
   maxHealth: 100
   health: 100
   startPoint: {x: 0, y: 0, z: 0}
@@ -2530,6 +2532,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: f8e559768bed7ed4680ab0449da7ec3a, type: 3}
   audioSource: {fileID: 1458508998571350161}
   timeBetweenFootsteps: 0.33
+  playerObj: {fileID: 0}
   rb: {fileID: 0}
   ui: {fileID: 0}
 --- !u!33 &1458508998571350164

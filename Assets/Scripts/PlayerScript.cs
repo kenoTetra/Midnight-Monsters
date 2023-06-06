@@ -8,6 +8,7 @@ public class PlayerScript : MonoBehaviour
     [Header("Input")]
     private float moveX;
     private float moveY;
+    private float moveSlide;
     private Vector3 moveDir;
     private bool moveJump;
     private bool moveDash;
@@ -20,7 +21,7 @@ public class PlayerScript : MonoBehaviour
     
     [Header("Jumping/Grounded")]
     public float groundDrag;
-    public float playerHeight;
+    public float playerHeight = 2f;
     private bool grounded;
     private float jumpCD = .2f;
     public float jumpCDMax = .2f;
@@ -30,6 +31,13 @@ public class PlayerScript : MonoBehaviour
 
     [Header("Dashing")]
     public float dashSpeed = 10f;
+    [Space(5)]
+
+    [Header("Ground Pound")]
+    public float groundPoundSpeed = 15f;
+    [Space(5)]
+    private bool groundPound;
+    private bool pressedSlideAir;
 
     [Header("Charges")]
     public int charges = 3;
@@ -53,8 +61,21 @@ public class PlayerScript : MonoBehaviour
 
     [Header("Slope Handling")]
     public float maxSlopeAngle;
+    public bool onSlope;
     [Space(5)]
     private RaycastHit slopeHit;
+
+    [Header("Sliding")]
+    public float slideForce = 40f;
+    public float slideBurstSpeed = 15f;
+    //public float slideYScale = .5f;
+    //private float startYScale;
+    private bool sliding;
+    private float slideTime = 5f;
+    public float timeUntilSlideDecay = 5f;
+    public bool hasStoppedSliding;
+    [Space(5)]
+    private bool slideGivenBurst;
 
     [Header("Health")]
     public int maxHealth = 100;
@@ -76,11 +97,13 @@ public class PlayerScript : MonoBehaviour
     public AudioSource audioSource;
     private float lastFootstepTime;
     public float timeBetweenFootsteps = .2f; 
+    [Space(5)]
 
     [Header("References")]
     [HideInInspector] public Rigidbody rb;
     [HideInInspector] public UIScript ui;
     private CameraScript cameraScript;
+    private PauseHandler pauseHandler;
 
     void Start()
     {
@@ -88,42 +111,80 @@ public class PlayerScript : MonoBehaviour
         ui = GetComponentInChildren<UIScript>();
         cameraScript = GetComponentInChildren<CameraScript>();
         orientation = GetComponent<Transform>();
+        pauseHandler = GetComponent<PauseHandler>();
         rb.freezeRotation = true;
         startPoint = transform.position;
+
+        //startYScale = playerObj.transform.localScale.y;
     }
 
     // Update is called once per frame
     void Update()
     {
-        inputs();
-        groundedChecks();
-        changeWeapons();
-        wallRun();
-
-        // footstep sounds
-        if(rb.velocity.magnitude > 0.2f && lastFootstepTime > timeBetweenFootsteps && charges == maxCharges)
+        if(!pauseHandler.paused)
         {
-            audioSource.PlayOneShot(stepSounds[Random.Range(0, landSounds.Count - 1)], 1f);
-            lastFootstepTime = 0f;
-        }
+            inputs();
+            groundedChecks();
+            changeWeapons();
+            wallRun();
 
-        else if(grounded)
-        {
-            // Add with the current speed of the player divided by normal max speed. incase you're zoomin'
-            lastFootstepTime += Time.deltaTime * rb.velocity.magnitude/speed;
-        }
+            // Jumping stuff!
+            if(moveJump)
+                playerJump();
 
-        // death check
-        if(health <= 0)
-        {
-            Scene scene = SceneManager.GetActiveScene();
-            SceneManager.LoadScene(scene.name);
+            // Dash
+            if(moveDash)
+                playerDash();
+
+            // Slide
+            if(moveSlide != 0 && grounded && !hasStoppedSliding)
+                sliding = true;
+
+            else
+                stopSlide();
+
+            // Check if trying to slide in air
+            if(Input.GetButtonDown("Crouch") && !grounded)
+                pressedSlideAir = true;
+
+            // Ground pound
+            if(moveSlide != 0 && !grounded && pressedSlideAir)
+                groundPound = true;
+
+            else
+            {
+                groundPound = false;
+                pressedSlideAir = false;
+            }
+
+            // footstep sounds
+            if(rb.velocity.magnitude > 0.2f && lastFootstepTime > timeBetweenFootsteps && charges == maxCharges)
+            {
+                audioSource.PlayOneShot(stepSounds[Random.Range(0, landSounds.Count - 1)], 1f);
+                lastFootstepTime = 0f;
+            }
+
+            else if(grounded)
+            {
+                // Add with the current speed of the player divided by normal max speed. incase you're zoomin'
+                lastFootstepTime += Time.deltaTime * rb.velocity.magnitude/speed;
+            }
+
+            // death check
+            if(health <= 0)
+            {
+                Scene scene = SceneManager.GetActiveScene();
+                SceneManager.LoadScene(scene.name);
+            }
         }
     }
 
     void FixedUpdate()
     {
         playerMovement();
+
+        if(sliding)
+            startSlide();            
     }
 
     void OnTriggerEnter(Collider col)
@@ -146,19 +207,9 @@ public class PlayerScript : MonoBehaviour
         // Input Intake
         moveX = Input.GetAxisRaw("Horizontal");
         moveY = Input.GetAxisRaw("Vertical");
+        moveSlide = Input.GetAxisRaw("Crouch");
         moveJump = Input.GetButtonDown("Jump");
         moveDash = Input.GetButtonDown("Dash");
-
-        // Jumping stuff!
-        if(moveJump)
-        {
-            playerJump();
-        }
-
-        if(moveDash)
-        {
-            playerDash();
-        }
     }
 
     void groundedChecks()
@@ -194,10 +245,11 @@ public class PlayerScript : MonoBehaviour
     void playerMovement()
     {
         // Basic Movement
-        moveDir = orientation.forward * moveY + orientation.right * moveX;
+        if(!sliding)
+            moveDir = orientation.forward * moveY + orientation.right * moveX;
 
         // Slope stuff
-        if (slopeHandler())
+        if(slopeHandler())
         {
             rb.AddForce(getSlopeMoveDir() * speed * rb.drag, ForceMode.Force);
 
@@ -207,11 +259,18 @@ public class PlayerScript : MonoBehaviour
             }
         }
 
+        // Ground pound for in air
+        if(groundPound)
+        {
+            rb.AddForce(Vector3.down * groundPoundSpeed, ForceMode.Force);
+        }
+
         // No gravity on slopes to prevent sliding.
         rb.useGravity = !slopeHandler();
 
-        // Apply the speed! Yay!
-        rb.AddForce(moveDir.normalized * speed * rb.drag, ForceMode.Force);
+        // Lock direction if sliding
+        if(!sliding)
+            rb.AddForce(moveDir.normalized * speed * rb.drag, ForceMode.Force);
     }
 
     void playerJump()
@@ -253,14 +312,79 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    private void startSlide()
+    {     
+        // Scale down player, stop them from being in the air
+        //playerObj.transform.localScale = new Vector3(playerObj.transform.localScale.x, slideYScale, playerObj.transform.localScale.z);
+        //rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+
+        // Keep player moving forward while sliding, decay over time.
+        if(!slopeHandler() || rb.velocity.y > -0.1f)
+        {
+            if(!slideGivenBurst && rb.velocity.magnitude < 15)
+            {
+                rb.AddForce(moveDir.normalized * slideBurstSpeed, ForceMode.Impulse);
+                slideGivenBurst = true;
+            }
+
+            else
+            {
+                slideGivenBurst = true;
+            }
+
+            rb.AddForce(moveDir.normalized * (slideForce * slideTime/timeUntilSlideDecay), ForceMode.Force);
+
+            if(slideTime > 0.2f)
+                slideTime -= Time.deltaTime;
+
+            else if(slideTime > 0f)
+            {
+                hasStoppedSliding = true;
+                slideTime -= Time.deltaTime;
+            }
+
+            else
+                sliding = false;
+        }
+
+        // Sliding down slope.
+        else
+        {
+            rb.AddForce(getSlopeMoveDir() * slideForce, ForceMode.Force);
+        }
+    }
+
+    private void stopSlide()
+    {
+        sliding = false;
+        slideTime = timeUntilSlideDecay;
+
+        if(moveSlide == 0)
+        {
+            hasStoppedSliding = false;
+            slideGivenBurst = false;
+        }
+        // Return player to normal.
+        //playerObj.transform.localScale = new Vector3(playerObj.transform.localScale.x, startYScale, playerObj.transform.localScale.z);
+    }
+
     private bool slopeHandler()
     {
-        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        if(!grounded)
+        {
+            return false;
+        }
+    
+        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.6f))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            onSlope = angle < maxSlopeAngle && angle != 0;
             return angle < maxSlopeAngle && angle != 0;
         }
 
+        else
+            onSlope = false;
+    
         return false;
     }
 
