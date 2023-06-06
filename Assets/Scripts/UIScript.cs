@@ -6,10 +6,10 @@ using TMPro;
 
 public class UIScript : MonoBehaviour
 {
-    [Header("Jump Markers")]
-    public Color jumpFull;
-    public Color jumpEmpty;
-    public List<Image> jumps = new List<Image>();
+    [Header("Charge Markers")]
+    public Color chargeFull;
+    public Color chargeEmpty;
+    public List<Image> charges = new List<Image>();
     public TMP_Text healthText;
     public Image healthBar;
     [Space(5)]
@@ -19,16 +19,16 @@ public class UIScript : MonoBehaviour
 
     public void updateUI()
     {
-        for(int i = 0; i < (jumps.Count); i++)
+        for(int i = 0; i < (charges.Count); i++)
         {
-            if(i + 1 > ps.jumps)
+            if(i + 1 > ps.charges)
             {
-                jumps[i].color = jumpEmpty;
+                charges[i].color = chargeEmpty;
             }
 
             else
             {
-                jumps[i].color = jumpFull;
+                charges[i].color = chargeFull;
             }
         }
 

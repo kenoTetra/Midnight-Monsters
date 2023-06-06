@@ -5,7 +5,6 @@ using UnityEngine;
 public class TargetScript : MonoBehaviour, IDamagable
 {
     public int health = 300;
-    public GameObject hitNumber;
     public GameObject hitSpawn;
 
     public void Damage(float damage, bool crit, float critHitMult)
@@ -23,7 +22,6 @@ public class TargetScript : MonoBehaviour, IDamagable
         }
 
         // Hit numbers
-        GameObject curHitNumber = Instantiate(hitNumber, hitSpawn.transform.position, Quaternion.identity);
-        curHitNumber.GetComponent<HitNumberScript>().updateDamageText(damage, crit, critHitMult);
+        IDamagable.spawnHitNumber(damage, crit, critHitMult, hitSpawn.transform.position);
     }
 }

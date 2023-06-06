@@ -10,6 +10,7 @@ public class PlayerScript : MonoBehaviour
     private float moveY;
     private Vector3 moveDir;
     private bool moveJump;
+    private bool moveDash;
     private float moveJumpHold;
     private Transform orientation;
 
@@ -25,20 +26,30 @@ public class PlayerScript : MonoBehaviour
     public float jumpCDMax = .2f;
     public LayerMask groundLayer;
     public float jumpForce = 5f;
-    public int jumps = 2;
-    public int maxJumps = 2;
-    public float fallShakeMagnitude = .4f;
-    public float speedTillShake = -2f;
+    [Space(5)]
+
+    [Header("Dashing")]
+    public float dashSpeed = 10f;
+
+    [Header("Charges")]
+    public int charges = 3;
+    public int maxCharges = 3;
     [Space(5)]
 
     [Header("Wallrunning")]
-    public float wallDistance = .5f;
+    public float wallDistance = .6f;
     public float minimumJumpHeight = 1.5f;
-    private bool wallLeft;
+    [HideInInspector] public bool wallLeft;
+    [HideInInspector] public bool wallRight;
     private bool canWallrun()
     {
         return !Physics.Raycast(transform.position, Vector3.down, minimumJumpHeight);
     }
+    public float wallRunGravity = 1f;
+    private RaycastHit leftWallHit;
+    private RaycastHit rightWallHit;
+    public float wallJumpForce = 6f;
+    public bool isWallRunning;
 
     [Header("Slope Handling")]
     public float maxSlopeAngle;
@@ -67,10 +78,8 @@ public class PlayerScript : MonoBehaviour
     public float timeBetweenFootsteps = .2f; 
 
     [Header("References")]
-    [HideInInspector]
-    public Rigidbody rb;
-    [HideInInspector]
-    public UIScript ui;
+    [HideInInspector] public Rigidbody rb;
+    [HideInInspector] public UIScript ui;
     private CameraScript cameraScript;
 
     void Start()
@@ -92,7 +101,7 @@ public class PlayerScript : MonoBehaviour
         wallRun();
 
         // footstep sounds
-        if(rb.velocity.magnitude > 0.2f && lastFootstepTime > timeBetweenFootsteps && jumps == maxJumps)
+        if(rb.velocity.magnitude > 0.2f && lastFootstepTime > timeBetweenFootsteps && charges == maxCharges)
         {
             audioSource.PlayOneShot(stepSounds[Random.Range(0, landSounds.Count - 1)], 1f);
             lastFootstepTime = 0f;
@@ -138,12 +147,17 @@ public class PlayerScript : MonoBehaviour
         moveX = Input.GetAxisRaw("Horizontal");
         moveY = Input.GetAxisRaw("Vertical");
         moveJump = Input.GetButtonDown("Jump");
-        moveJumpHold = Input.GetAxisRaw("Jump");
+        moveDash = Input.GetButtonDown("Dash");
 
         // Jumping stuff!
         if(moveJump)
         {
             playerJump();
+        }
+
+        if(moveDash)
+        {
+            playerDash();
         }
     }
 
@@ -158,10 +172,10 @@ public class PlayerScript : MonoBehaviour
             rb.drag = groundDrag;
 
             // Audio for landing
-            if(!audioSource.isPlaying && jumps < maxJumps)
+            if(!audioSource.isPlaying && charges < maxCharges)
                 audioSource.PlayOneShot(landSounds[Random.Range(0, landSounds.Count - 1)], 1f);
 
-            jumps = maxJumps;
+            charges = maxCharges;
 
             // Reset jump count visuals   
             ui.updateUI();
@@ -203,12 +217,33 @@ public class PlayerScript : MonoBehaviour
     void playerJump()
     {
         // Jumping
-        if(jumps > 0 && moveJump)
+        if(charges > 0 && moveJump && !isWallRunning)
         {
-            jumps -= 1;
+            charges -= 1;
             jumpCD = 0;
             rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse); 
+
+            // Play jump sounds
+            audioSource.PlayOneShot(jumpSounds[Random.Range(0, landSounds.Count - 1)], 1f);
+
+            // Update jump counter visuals
+            ui.updateUI();
+        }
+    }
+
+    void playerDash()
+    {
+        if(charges > 0 && moveDash && !isWallRunning)
+        {
+            charges -= 1;
+            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+            if(moveDir != Vector3.zero)
+                rb.AddForce(moveDir * dashSpeed, ForceMode.Impulse);
+
+            else
+                rb.AddForce(Vector3.forward * dashSpeed, ForceMode.Impulse);
 
             // Play jump sounds
             audioSource.PlayOneShot(jumpSounds[Random.Range(0, landSounds.Count - 1)], 1f);
@@ -264,19 +299,65 @@ public class PlayerScript : MonoBehaviour
 
     void checkWall()
     {
-        wallLeft = Physics.Raycast(transform.position, -orientation.right, wallDistance);
+        wallLeft = Physics.Raycast(transform.position, -orientation.right, out leftWallHit, wallDistance);
+        wallRight = Physics.Raycast(transform.position, orientation.right, out rightWallHit, wallDistance);
     }
 
     void wallRun()
     {
         checkWall();
-        
+
         if(canWallrun())
         {
-            if(wallLeft)
+            if(wallLeft && !grounded)
             {
-                Debug.Log("You can wallrun my guy");
+                startWallRun();
+                //Debug.Log("Wallrun initiated: Left");
+            }
+
+            else if(wallRight && !grounded)
+            {
+                startWallRun();
+                //Debug.Log("Wallrun initated: Right");
+            }
+
+            else
+                stopWallRun();
+        }
+
+        else
+            stopWallRun();
+    }
+
+    void startWallRun()
+    {
+        rb.useGravity = false;
+
+        rb.AddForce(Vector3.down * wallRunGravity, ForceMode.Force);
+
+        if(Input.GetButtonDown("Jump"))
+        {
+            if (wallLeft)
+            {
+                Vector3 wallRunJumpDir = transform.up + leftWallHit.normal;
+                rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+                rb.AddForce(wallRunJumpDir * wallJumpForce * 75, ForceMode.Force);
+            }
+
+            else if(wallRight)
+            {
+                Vector3 wallRunJumpDir = transform.up + rightWallHit.normal;
+                rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+                rb.AddForce(wallRunJumpDir * wallJumpForce * 75, ForceMode.Force);
             }
         }
+
+        isWallRunning = true;
+    }
+
+    void stopWallRun()
+    {
+        rb.useGravity = true;
+        isWallRunning = false;
     }
 }
