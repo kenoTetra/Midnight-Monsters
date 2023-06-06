@@ -33,8 +33,14 @@ public class EnemyCombat : MonoBehaviour
 
     void FixedUpdate()
     {
-        var remainingDistance = navigation?.remainingDistance ?? float.MaxValue;
-        var range = useStoppingDistance ? (navigation?.stoppingDistance ?? 0) : attackRange;
+        // If navigation is not set, return
+        if (navigation == null)
+        {
+            return;
+        }
+        
+        var remainingDistance = navigation.remainingDistance;
+        var range = useStoppingDistance ? navigation.stoppingDistance : attackRange;
 
         // If the object is within attack range, send the "Attack" message
         if (remainingDistance <= range && !attacking)

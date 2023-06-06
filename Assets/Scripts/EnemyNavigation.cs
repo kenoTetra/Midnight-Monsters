@@ -49,8 +49,11 @@ public class EnemyNavigation : MonoBehaviour
         {
             return;
         }
-
-        agent.destination = target?.position ?? targetPosition;
+        if (target != null)
+        {
+            targetPosition = target.position;
+        }
+        agent.destination = targetPosition;
         agent.stoppingDistance = stoppingDistance;
         agent.updateRotation = faceDirection;
         remainingDistance = agent.remainingDistance;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestEnemyGunScript : MonoBehaviour
+public class TestEnemyScript : MonoBehaviour, IDamagable
 {
     // The GameObject from which the bullet will be instantiated
     [SerializeField]
@@ -11,6 +11,9 @@ public class TestEnemyGunScript : MonoBehaviour
     // The bullet prefab
     [SerializeField]
     private GameObject bulletPrefab;
+
+    // The enemy's health
+    public float health = 100f;
 
     // Whether the enemy is attacking
     private bool attacking = false;
@@ -39,5 +42,17 @@ public class TestEnemyGunScript : MonoBehaviour
     {
         // Rotate the GameObject every frame so it keeps facing the target
         transform.LookAt(GameObject.FindWithTag("Player").transform);
+    }
+
+    void IDamagable.Damage(float damage, bool crit, float critHitMult)
+    {
+        // Calculate the actual damage to be dealt
+        var actual_damage = damage * (crit ? critHitMult : 1f);
+
+        // Deal damage to the enemy
+        health = Mathf.Min(health - actual_damage, 0f);
+
+        // Log the damage dealt
+        Debug.Log("Enemy takes " + actual_damage + " damage");
     }
 }
