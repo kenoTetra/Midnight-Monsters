@@ -13878,7 +13878,6 @@ GameObject:
   - component: {fileID: 1892885372411144720}
   - component: {fileID: 1892885372411144723}
   - component: {fileID: 1892885372411144722}
-  - component: {fileID: 1892885372411144721}
   m_Layer: 7
   m_Name: Visual
   m_TagString: Untagged
@@ -13902,20 +13901,6 @@ Transform:
   m_Father: {fileID: 1892885373116371900}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &1892885372411144721
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1892885372411144719}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1892885372411144722
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -13978,7 +13963,6 @@ GameObject:
   - component: {fileID: 1892885372546901061}
   - component: {fileID: 1892885372546901060}
   - component: {fileID: 1892885372546901059}
-  - component: {fileID: 1892885372546901062}
   m_Layer: 7
   m_Name: FunnyGun
   m_TagString: Untagged
@@ -14065,21 +14049,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1892885372546901057}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1892885372546901062
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1892885372546901057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32bcc78860fbbcf438c8b3584c8bcbe7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bulletSpawnPoint: {fileID: 1892885373314146512}
-  bulletPrefab: {fileID: 8318942275582393875, guid: 3d2a66a6c83e43642b2621b80884b0fc, type: 3}
-  health: 100
 --- !u!1 &1892885373116371897
 GameObject:
   m_ObjectHideFlags: 0
@@ -14092,6 +14061,8 @@ GameObject:
   - component: {fileID: 1892885373116371899}
   - component: {fileID: 1892885373116371898}
   - component: {fileID: 1892885373116371901}
+  - component: {fileID: 1892885373116371902}
+  - component: {fileID: 1892885373116371903}
   m_Layer: 7
   m_Name: TestEnemy
   m_TagString: Untagged
@@ -14168,9 +14139,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   navigation: {fileID: 1892885373116371898}
-  attackMessageReceiver: {fileID: 1892885372546901057}
+  attackMessageReceiver: {fileID: 1892885373116371897}
   attackRange: 10
   useStoppingDistance: 1
+--- !u!114 &1892885373116371902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1892885373116371897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32bcc78860fbbcf438c8b3584c8bcbe7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletSpawnPoint: {fileID: 1892885373314146512}
+  bulletPrefab: {fileID: 8318942275582393875, guid: 3d2a66a6c83e43642b2621b80884b0fc, type: 3}
+  health: 100
+--- !u!136 &1892885373116371903
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1892885373116371897}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &1892885373314146512
 GameObject:
   m_ObjectHideFlags: 0
