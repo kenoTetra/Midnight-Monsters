@@ -5,17 +5,19 @@ using UnityEngine;
 public class PlayerWallrun : MonoBehaviour
 {
     [Header("Wallrunning")]
-    [SerializeField] private float wallDistance = .6f;
-    [SerializeField] private float minimumJumpHeight = 1.5f;
-    [SerializeField] private float wallJumpForce = 40f;
+    [SerializeField] private float wallDistance = .8f;
+    [SerializeField] private float minimumJumpHeight = 1f;
+    [SerializeField] private float wallJumpForce = 10f;
     [SerializeField] private float wallRunGravity = 1f;
+    [SerializeField] private float wallrunAngleMod = .85f;
+    float wallDragTime;
+    [SerializeField] private float wallDragMax = .35f;
+    //[SerializeField] private float shootOffMod = 2f;
     [HideInInspector] public bool isWallRunning;
 
     // Raycast Info
-    [HideInInspector] public bool wallLeft;
-    [HideInInspector] public bool wallRight;
-    RaycastHit leftWallHit;
-    RaycastHit rightWallHit;
+    [HideInInspector] public bool wallLeft,wallBackLeft,wallFrontLeft;
+    [HideInInspector] public bool wallRight,wallBackRight,wallFrontRight;
     private bool canWallrun()
     {
         return !Physics.Raycast(transform.position, Vector3.down, minimumJumpHeight);
@@ -62,31 +64,46 @@ public class PlayerWallrun : MonoBehaviour
 
     void checkWall()
     {
-        wallLeft = Physics.Raycast(transform.position, -pm.orientation.right, out leftWallHit, wallDistance);
-        wallRight = Physics.Raycast(transform.position, pm.orientation.right, out rightWallHit, wallDistance);
+        // Left
+        wallLeft = Physics.Raycast(transform.position, -pm.orientation.right, wallDistance);
+        wallBackLeft = Physics.Raycast(transform.position, (-pm.orientation.right - (pm.orientation.forward/wallrunAngleMod)), wallDistance);
+        wallFrontLeft = Physics.Raycast(transform.position, (-pm.orientation.right + (pm.orientation.forward/wallrunAngleMod)), wallDistance);
+
+        // Debug Left
+        Debug.DrawRay(transform.position, -pm.orientation.right, Color.green);
+        Debug.DrawRay(transform.position, -pm.orientation.right - (pm.orientation.forward/wallrunAngleMod), Color.green);
+        Debug.DrawRay(transform.position, -pm.orientation.right + (pm.orientation.forward/wallrunAngleMod), Color.green);
+
+        // Right
+        wallRight = Physics.Raycast(transform.position, pm.orientation.right, wallDistance);
+        wallBackRight = Physics.Raycast(transform.position, pm.orientation.right - (pm.orientation.forward/wallrunAngleMod), wallDistance);
+        wallFrontRight = Physics.Raycast(transform.position, pm.orientation.right + (pm.orientation.forward/wallrunAngleMod), wallDistance);
+
+        // Debug Right
+        Debug.DrawRay(transform.position, pm.orientation.right, Color.green);
+        Debug.DrawRay(transform.position, pm.orientation.right - (pm.orientation.forward/wallrunAngleMod), Color.green);
+        Debug.DrawRay(transform.position, pm.orientation.right + (pm.orientation.forward/wallrunAngleMod), Color.green);
     }
 
     void startWallRun()
     {
+        // Continue walldrag
         pm.rb.useGravity = false;
-
         pm.rb.AddForce(Vector3.down * wallRunGravity, ForceMode.Force);
 
-        if(Input.GetButtonDown("Jump"))
-        {
-            if (wallLeft)
-            {
-                Vector3 wallRunJumpDir = transform.up + leftWallHit.normal;
-                pm.rb.velocity = new Vector3(pm.rb.velocity.x, 0, pm.rb.velocity.z);
-                pm.rb.AddForce(wallRunJumpDir * wallJumpForce * 75, ForceMode.Force);
-            }
+        if (wallLeft || wallBackLeft || wallFrontLeft || wallRight || wallBackRight || wallFrontRight)
+            wallDragTime = 0f;
 
-            else if(wallRight)
-            {
-                Vector3 wallRunJumpDir = transform.up + rightWallHit.normal;
-                pm.rb.velocity = new Vector3(pm.rb.velocity.x, 0, pm.rb.velocity.z);
-                pm.rb.AddForce(wallRunJumpDir * wallJumpForce * 75, ForceMode.Force);
-            }
+        else if(wallDragTime < wallDragMax)
+        {
+            wallDragTime += Time.deltaTime;
+        }
+
+        if(Input.GetButtonDown("Jump") && wallDragTime < wallDragMax)
+        {
+            Vector3 wallRunJumpDir = transform.up + pm.orientation.forward;
+            pm.rb.velocity = new Vector3(pm.rb.velocity.x, 0, pm.rb.velocity.z);
+            pm.rb.AddForce(wallRunJumpDir * wallJumpForce * 75, ForceMode.Force);
         }
 
         isWallRunning = true;

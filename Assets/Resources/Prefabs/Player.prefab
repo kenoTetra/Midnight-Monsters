@@ -2811,9 +2811,14 @@ MonoBehaviour:
   minimumJumpHeight: 1.5
   wallJumpForce: 7.5
   wallRunGravity: 0.25
+  wallrunAngleMod: 1.25
   isWallRunning: 0
   wallLeft: 0
+  wallBackLeft: 0
+  wallFrontLeft: 0
   wallRight: 0
+  wallBackRight: 0
+  wallFrontRight: 0
 --- !u!114 &3378473943301311293
 MonoBehaviour:
   m_ObjectHideFlags: 0
