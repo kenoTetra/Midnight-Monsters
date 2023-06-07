@@ -7,7 +7,7 @@ using UnityEngine;
 public class GunData : ScriptableObject
 {
     [Header("Stats")]
-    public new string name;
+    public string gunName;
     public float damage;
     public float critHitMult;
     public float maxDistance;

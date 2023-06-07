@@ -15,6 +15,14 @@ public class UIScript : MonoBehaviour
     [Header("Health Information")]
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private Image healthBar;
+    [SerializeField] private Image healthEffectBar;
+    [SerializeField] private Color healthBarEffectColor = Color.green;
+    [SerializeField] private Color healthColor = Color.red;
+    [HideInInspector] public bool lerpBad;
+    [HideInInspector] public bool lerpGood;
+    float goodLerpTime;
+    float badLerpTime;
+    [HideInInspector] public float prevHealth = 100f;
     [Space(5)]
 
     [Header("Weapon UI")]
@@ -49,6 +57,36 @@ public class UIScript : MonoBehaviour
         
         healthText.text = ps.health.ToString();
         healthBar.fillAmount = (float)ps.health/(float)ps.maxHealth;
+    }
+
+    void Update()
+    {
+        if(lerpGood)
+        {
+            goodLerpTime += Time.deltaTime;
+
+            healthBar.color = Color.Lerp(healthBarEffectColor, healthColor, goodLerpTime/.5f);
+            
+            if(goodLerpTime > .5f)
+                lerpGood = false;
+        }
+
+        else if(lerpBad)
+        {
+            badLerpTime += Time.deltaTime;
+
+            var badFillAmm = Mathf.Lerp(prevHealth/ps.maxHealth, ps.health/ps.maxHealth, badLerpTime/1.5f);
+            healthEffectBar.fillAmount = badFillAmm;
+            
+            if(badLerpTime > 1.5f)
+                lerpBad = false;
+        }
+
+        else
+        {
+            goodLerpTime = 0f;
+            badLerpTime = 0f;
+        }
     }
 
     public void FadeOtherWeapons(int weaponActive)

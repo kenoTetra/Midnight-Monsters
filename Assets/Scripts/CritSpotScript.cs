@@ -5,4 +5,5 @@ using UnityEngine;
 public class CritSpotScript : MonoBehaviour
 {
     public TargetScript target;
+    public TestEnemyScript enemyScript;
 }

@@ -31,6 +31,11 @@ public class EnemyNavigation : MonoBehaviour
         {
             agent = GetComponent<NavMeshAgent>();
         }
+
+        if (target == null)
+        {
+            target = GameObject.FindWithTag("Player").GetComponent<Transform>();
+        }
     }
 
     void Start()

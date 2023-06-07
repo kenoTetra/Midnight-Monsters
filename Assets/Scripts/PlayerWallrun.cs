@@ -41,17 +41,8 @@ public class PlayerWallrun : MonoBehaviour
 
             if(canWallrun())
             {
-                if(wallLeft && !pm.grounded)
-                {
+                if(wallLeft || wallBackLeft || wallFrontLeft || wallRight || wallBackRight || wallFrontRight)
                     startWallRun();
-                    //Debug.Log("Wallrun initiated: Left");
-                }
-
-                else if(wallRight && !pm.grounded)
-                {
-                    startWallRun();
-                    //Debug.Log("Wallrun initated: Right");
-                }
 
                 else
                     stopWallRun();
@@ -88,9 +79,14 @@ public class PlayerWallrun : MonoBehaviour
     void startWallRun()
     {
         // Continue walldrag
-        pm.rb.useGravity = false;
-        pm.rb.AddForce(Vector3.down * wallRunGravity, ForceMode.Force);
-
+        if(wallDragTime < wallDragMax)
+        {
+            pm.rb.useGravity = false;
+            isWallRunning = true;
+            pm.rb.AddForce(Vector3.down * wallRunGravity, ForceMode.Force);
+        }
+        
+        //
         if (wallLeft || wallBackLeft || wallFrontLeft || wallRight || wallBackRight || wallFrontRight)
             wallDragTime = 0f;
 
@@ -103,10 +99,9 @@ public class PlayerWallrun : MonoBehaviour
         {
             Vector3 wallRunJumpDir = transform.up + pm.orientation.forward;
             pm.rb.velocity = new Vector3(pm.rb.velocity.x, 0, pm.rb.velocity.z);
-            pm.rb.AddForce(wallRunJumpDir * wallJumpForce * 75, ForceMode.Force);
-        }
-
-        isWallRunning = true;
+            pm.rb.AddForce(wallRunJumpDir * wallJumpForce, ForceMode.Impulse);
+            wallDragTime = wallDragMax;
+        }        
     }
 
     void stopWallRun()

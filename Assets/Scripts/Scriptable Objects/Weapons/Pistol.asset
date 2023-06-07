@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2afd78300ee1734fa879d031d6c0e8b, type: 3}
   m_Name: Pistol
   m_EditorClassIdentifier: 
-  name: Pistol
+  gunName: Pistol
   damage: 15
-  critHitMult: 1.5
+  critHitMult: 2
   maxDistance: 250
   automatic: 0
   automaticFireRate: 0

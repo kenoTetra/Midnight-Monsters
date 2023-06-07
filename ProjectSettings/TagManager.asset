@@ -8,6 +8,7 @@ TagManager:
   - Target
   - Crit
   - GunSound
+  - Ground
   layers:
   - Default
   - TransparentFX

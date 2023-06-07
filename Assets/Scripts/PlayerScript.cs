@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 public class PlayerScript : MonoBehaviour
 {
     [Header("Health")]
-    public int maxHealth = 100;
-    public int health = 100;
+    public float maxHealth = 100;
+    public float health = 100;
 
     [Header("Checkpoints")]
     public Vector3 startPoint;
@@ -88,5 +88,35 @@ public class PlayerScript : MonoBehaviour
 
         weaponList[alpha-1].SetActive(true);
         ui.FadeOtherWeapons(alpha);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        if(damage >= maxHealth)
+        {
+            ui.prevHealth = health;
+
+            health = 1;
+        }
+
+        else
+        {
+            health -= damage;
+            health = Mathf.Clamp(health, 0f, maxHealth);
+
+            ui.prevHealth = health + damage;
+        }
+
+        ui.updateUI();
+        ui.lerpBad = true;
+    }
+
+    public void GainHealth(float healthGained)
+    {
+        health += healthGained;
+        health = Mathf.Clamp(health, 0f, maxHealth);
+
+        ui.updateUI();
+        ui.lerpGood = true;
     }
 }

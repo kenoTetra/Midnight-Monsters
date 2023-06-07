@@ -4,37 +4,29 @@ using UnityEngine;
 
 public class TestEnemyScript : MonoBehaviour, IDamagable
 {
-    // The GameObject from which the bullet will be instantiated
-    [SerializeField]
-    private GameObject bulletSpawnPoint;
+    [Header("Bullet Data")]
+    [SerializeField] private GameObject bulletSpawnPoint;
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private float bulletSpeed = 25f;
+    float timeSinceLastShot;
+    [SerializeField] private float timeBetweenShots = .5f;
 
-    // The bullet prefab
-    [SerializeField]
-    private GameObject bulletPrefab;
-
-    // The enemy's health
+    [Header("Enemy Data")]
     public float health = 100f;
-
-    // Whether the enemy is attacking
-    private bool attacking = false;
+    [SerializeField] private GameObject healthPickup;
+    bool attacking;
 
     void Attack()
     {
         Debug.Log("Enemy begins attacking");
 
-        // Instantiate a bullet at the position of the GameObject
-        // which the script is attached to
-        var bullet = Instantiate(bulletPrefab, bulletSpawnPoint.transform.position, Quaternion.identity);
-
-        // Get the Rigidbody component of the instantiated bullet
-        var bulletRigidbody = bullet.GetComponent<Rigidbody>();
-
-        // Add force to the bullet in the direction the GameObject is facing
-        bulletRigidbody.AddForce(transform.forward * 1000f);
+        attacking = true;
     }
 
     void StopAttack()
     {
+        attacking = false;
+
         Debug.Log("Enemy stops attacking");
     }
 
@@ -42,17 +34,65 @@ public class TestEnemyScript : MonoBehaviour, IDamagable
     {
         // Rotate the GameObject every frame so it keeps facing the target
         transform.LookAt(GameObject.FindWithTag("Player").transform);
+        bulletSpawnPoint.transform.LookAt(GameObject.FindWithTag("Player").transform);
+
+        if(attacking)
+        {
+            if(timeSinceLastShot > timeBetweenShots)
+            {
+                // Instantiate a bullet at the position of the GameObject
+                // which the script is attached to
+                var bullet = Instantiate(bulletPrefab, bulletSpawnPoint.transform.position, Quaternion.identity);
+
+                // Get the Rigidbody component of the instantiated bullet
+                var bulletRigidbody = bullet.GetComponent<Rigidbody>();
+
+                // Add force to the bullet in the direction the GameObject is facing
+                bulletRigidbody.AddForce(bulletSpawnPoint.transform.forward * bulletSpeed, ForceMode.Impulse);
+
+                timeSinceLastShot = 0f;
+            }
+
+            else
+            {
+                timeSinceLastShot += Time.deltaTime;
+            }
+        }
+
+        else
+        {
+            timeSinceLastShot = 0f;
+        }
     }
 
-    void IDamagable.Damage(float damage, bool crit, float critHitMult)
+    void IDamagable.Damage(float damage, bool crit, float critHitMult, string gunName)
     {
         // Calculate the actual damage to be dealt
         var actual_damage = damage * (crit ? critHitMult : 1f);
 
         // Deal damage to the enemy
-        health = Mathf.Min(health - actual_damage, 0f);
+        health -= actual_damage;
+
+        if(gunName != "Hazard")
+            IDamagable.spawnHitNumber(damage, crit, critHitMult, bulletSpawnPoint.transform.position);
 
         // Log the damage dealt
         Debug.Log("Enemy takes " + actual_damage + " damage");
+
+        if(health <= 0)
+        {
+            if(gunName == "Melee")
+                Instantiate(healthPickup, bulletSpawnPoint.transform.position, Quaternion.identity);
+
+            Destroy(gameObject);
+        }
+    }
+
+    void OnTriggerEnter(Collider col)
+    {
+        if(col.tag == "Hazard")
+        {
+            Destroy(gameObject);
+        }
     }
 }

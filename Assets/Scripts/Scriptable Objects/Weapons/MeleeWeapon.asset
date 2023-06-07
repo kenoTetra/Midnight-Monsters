@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2afd78300ee1734fa879d031d6c0e8b, type: 3}
   m_Name: MeleeWeapon
   m_EditorClassIdentifier: 
-  name: Melee
+  gunName: Melee
   damage: 150
   critHitMult: 2
   maxDistance: 3

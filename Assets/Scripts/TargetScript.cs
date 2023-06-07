@@ -7,7 +7,7 @@ public class TargetScript : MonoBehaviour, IDamagable
     public int health = 300;
     public GameObject hitSpawn;
 
-    public void Damage(float damage, bool crit, float critHitMult)
+    public void Damage(float damage, bool crit, float critHitMult, string gunName)
     {
         // Damage target
         if(crit)

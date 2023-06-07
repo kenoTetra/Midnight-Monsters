@@ -54,8 +54,19 @@ public class GunScript : MonoBehaviour
                 if(hitInfo.transform.gameObject.tag == "Crit")
                 {
                     critHit = true;
-                    IDamagable damageable = hitInfo.transform.GetComponent<CritSpotScript>().target;
-                    damageable?.Damage(gunData.damage, critHit, gunData.critHitMult);
+
+                    if(hitInfo.transform.GetComponent<CritSpotScript>().target != null)
+                    {
+                        IDamagable damageable = hitInfo.transform.GetComponent<CritSpotScript>().target;
+                        damageable?.Damage(gunData.damage, critHit, gunData.critHitMult, gunData.gunName);
+                    }
+
+                    else if(hitInfo.transform.GetComponent<CritSpotScript>().enemyScript != null)
+                    {
+                        IDamagable damageable = hitInfo.transform.GetComponent<CritSpotScript>().enemyScript;
+                        damageable?.Damage(gunData.damage, critHit, gunData.critHitMult, gunData.gunName);
+                    }
+                    
                     Debug.Log("Hit a critical!");
                 }
                 
@@ -63,7 +74,7 @@ public class GunScript : MonoBehaviour
                 {
                     critHit = false;
                     IDamagable damageable = hitInfo.transform.GetComponent<IDamagable>();
-                    damageable?.Damage(gunData.damage, critHit, gunData.critHitMult);
+                    damageable?.Damage(gunData.damage, critHit, gunData.critHitMult, gunData.gunName);
                 }
                 
             }

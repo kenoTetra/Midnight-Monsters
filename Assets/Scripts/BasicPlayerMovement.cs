@@ -13,7 +13,7 @@ public class BasicPlayerMovement : MonoBehaviour
 
     [Header("Movement")]
     public float speed = 10f;
-    [SerializeField] private float artificalGravity = -7.5f;
+    [SerializeField] private float artificalGravity = -3f;
 
     // Slope Handling
     [SerializeField] private float maxSlopeAngle;

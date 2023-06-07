@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IDamagable
 {
-    public void Damage(float damage, bool crit, float critHitMult);
+    public void Damage(float damage, bool crit, float critHitMult, string gunName);
 
     public static void spawnHitNumber(float damage, bool crit, float critHitMult, Vector3 spawnLoc)
     {
