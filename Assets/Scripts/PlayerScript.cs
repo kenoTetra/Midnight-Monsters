@@ -77,6 +77,11 @@ public class PlayerScript : MonoBehaviour
         {
             newWeapon(3);
         }
+
+        if(Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            newWeapon(4);
+        }
     }
 
     void newWeapon(int alpha)

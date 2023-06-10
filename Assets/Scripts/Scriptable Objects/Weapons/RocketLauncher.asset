@@ -10,16 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f2afd78300ee1734fa879d031d6c0e8b, type: 3}
-  m_Name: MeleeWeapon
+  m_Name: RocketLauncher
   m_EditorClassIdentifier: 
-  gunName: Melee
+  gunName: Rocket Launcher
   damage: 150
-  critHitMult: 2
-  maxDistance: 3
-  weaponType: 1
+  critHitMult: 1
+  maxDistance: 75
+  weaponType: 2
   automaticFireRate: 0
-  projectileSpeed: 0
-  singleShotDelay: 0.4
-  fireSounds:
-  - {fileID: 8300000, guid: fd34a91935827984aa555003df90c3ab, type: 3}
-  - {fileID: 8300000, guid: 7982fd38b9ba76b4ead64cc86195a0e4, type: 3}
+  projectileSpeed: 20
+  projectilePrefab: {fileID: 1062225292008017881, guid: 6b150332ffeca324dafc99258bebc103, type: 3}
+  singleShotDelay: 1
+  fireSounds: []

@@ -6,6 +6,12 @@ using UnityEngine;
 
 public class GunData : ScriptableObject
 {
+    public enum GunType {
+        Automatic,
+        SingleShot,
+        Projectile
+    }
+
     [Header("Stats")]
     public string gunName;
     public float damage;
@@ -13,9 +19,11 @@ public class GunData : ScriptableObject
     public float maxDistance;
     [Space(5)]
 
-    [Header("Weapon Type")]
-    public bool automatic;
+    [Header("Weapon Type Data")]
+    public GunType weaponType;
     public int automaticFireRate;
+    public float projectileSpeed;
+    public GameObject projectilePrefab;
     public float singleShotDelay;
     [Space(5)]
 
