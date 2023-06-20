@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ProjectileGlobalCollision : MonoBehaviour
 {
+    public bool killProjectile = true;
+    public float projectileLifetime;
+    float timer;
     MeshRenderer mesh;
     TrailRenderer trail;
     Rigidbody rb;
@@ -17,9 +20,27 @@ public class ProjectileGlobalCollision : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
     }
-
-    void OnCollision(Collision col)
+    
+    void Update()
     {
+        timer += Time.deltaTime;
+
+        if(timer > projectileLifetime)
+        {
+            ProjectileDestroy();
+        }
+    }
+
+    void OnCollisionEnter(Collision col)
+    {
+        ProjectileDestroy();
+    }
+
+    void ProjectileDestroy()
+    {
+        // Start other script logic
+        killProjectile = true;
+
         // Stop rendering everything but allow time for logic
         mesh.enabled = false;
 
@@ -27,6 +48,12 @@ public class ProjectileGlobalCollision : MonoBehaviour
             trail.emitting = false;
 
         rb.detectCollisions = false;
+
+        foreach(Transform child in GetComponentsInChildren<Transform>())
+        {
+            if(child.gameObject != this.gameObject)
+                child.gameObject.SetActive(false);
+        }
 
         // Destroy self after logic runs.
         Destroy(gameObject, 1f);

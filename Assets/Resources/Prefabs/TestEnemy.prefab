@@ -592,6 +592,7 @@ MonoBehaviour:
   timeBetweenShots: 0.5
   health: 100
   healthPickup: {fileID: 1573201023856567465, guid: ae1716cd596106442a2c673bb002443f, type: 3}
+  dropRate: 0.4
 --- !u!136 &6057080589977056064
 CapsuleCollider:
   m_ObjectHideFlags: 0

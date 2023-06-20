@@ -886,6 +886,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1062225292008017894}
+  - component: {fileID: -1532618783303045310}
   - component: {fileID: 1062225292008017895}
   - component: {fileID: 1062225292008017892}
   - component: {fileID: 1062225292008017893}
@@ -919,6 +920,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &-1532618783303045310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062225292008017881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9028a05796ac6a549b02422e17381fb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gunData: {fileID: 11400000, guid: a560b01e496a24e4a9ec1e7a7323707e, type: 2}
+  explosionParticles: {fileID: 5787002973588154946, guid: 5ff6908f450cb2e48adac0b758cb3ba8, type: 3}
+  explosionDistance: 15
+  blowBackDistance: 30
 --- !u!114 &1062225292008017895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -931,6 +948,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf2b346a08b1b5f43871a86cd2cd53a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  killProjectile: 0
+  projectileLifetime: 10
 --- !u!33 &1062225292008017892
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1010,7 +1029,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!96 &1062225292008017880
 TrailRenderer:
   serializedVersion: 2
@@ -1053,7 +1072,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 5
+  m_Time: 1
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.075

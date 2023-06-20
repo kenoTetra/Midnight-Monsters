@@ -61,7 +61,7 @@ GameObject:
   - component: {fileID: 1573201023856567464}
   - component: {fileID: 1573201023856567470}
   m_Layer: 0
-  m_Name: Health Pickup
+  m_Name: Large Health Pickup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -76,7 +76,7 @@ Transform:
   m_GameObject: {fileID: 1573201023856567465}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.25, z: 0}
-  m_LocalScale: {x: 0.6, y: 0.3, z: 0.6}
+  m_LocalScale: {x: 1, y: 0.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1573201021805948538}
@@ -113,7 +113,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 97edd63bb3f74b549b70e1fcc6e9c48b, type: 2}
+  - {fileID: 2100000, guid: ff526de1088a13046ba64c0cae1aa192, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bf3e676e13de3d4c83147473a01ca8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthGained: 25
+  healthGained: 100
   randomBounce: 5
   groundLayer:
     serializedVersion: 2

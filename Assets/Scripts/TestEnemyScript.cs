@@ -14,6 +14,7 @@ public class TestEnemyScript : MonoBehaviour, IDamagable
     [Header("Enemy Data")]
     public float health = 100f;
     [SerializeField] private GameObject healthPickup;
+    [SerializeField] private float dropRate;
     bool attacking;
 
     void Attack()
@@ -81,7 +82,7 @@ public class TestEnemyScript : MonoBehaviour, IDamagable
 
         if(health <= 0)
         {
-            if(gunName == "Melee")
+            if(gunName == "Melee" && Random.Range(0f, 1f) > 1f - dropRate)
                 Instantiate(healthPickup, bulletSpawnPoint.transform.position, Quaternion.identity);
 
             Destroy(gameObject);

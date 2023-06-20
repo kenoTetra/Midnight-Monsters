@@ -78,9 +78,9 @@ public class HitNumberScript : MonoBehaviour
         Update();
 
         if(crit)
-            hitNumber.text = "-" + (damage * critHitMult).ToString();
+            hitNumber.text = "-" + System.Math.Round((damage * critHitMult),2).ToString();
 
         else
-            hitNumber.text = "-" + damage.ToString();
+            hitNumber.text = "-" + System.Math.Round(damage,2).ToString();
     }
 }

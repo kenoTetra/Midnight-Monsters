@@ -53,7 +53,8 @@ public class GunScript : MonoBehaviour
 
     // Single shot delay OR shots fired every second divided by a second (ala, 600 rpm is 10rps, which is .1s between shots)
     private bool CanShoot() => lastShotTime > gunData.singleShotDelay && gunData.weaponType == GunData.GunType.SingleShot
-     || lastShotTime > 1f / (gunData.automaticFireRate / 60f) && gunData.weaponType == GunData.GunType.Automatic;
+     || lastShotTime > 1f / (gunData.automaticFireRate / 60f) && gunData.weaponType == GunData.GunType.Automatic
+     || lastShotTime > gunData.singleShotDelay && gunData.weaponType == GunData.GunType.Projectile;
 
     private void Shoot()
     {
@@ -104,10 +105,13 @@ public class GunScript : MonoBehaviour
 
     void ProjectileShoot()
     {
-        if(gunData.projectilePrefab != null)
+        if(CanShoot())
         {
-            GameObject projectileShot = Instantiate(gunData.projectilePrefab, transform.position, transform.rotation);
-            projectileShot.GetComponent<Rigidbody>().AddForce(transform.forward * gunData.projectileSpeed, ForceMode.Impulse);
+            if(gunData.projectilePrefab != null)
+            {
+                GameObject projectileShot = Instantiate(gunData.projectilePrefab, transform.position, transform.rotation * Quaternion.Euler(90, 0, 0));
+                projectileShot.GetComponent<Rigidbody>().AddForce(transform.forward * gunData.projectileSpeed, ForceMode.Impulse);
+            }
         }
     }
 }

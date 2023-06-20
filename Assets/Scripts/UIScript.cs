@@ -55,7 +55,7 @@ public class UIScript : MonoBehaviour
             }
         }
         
-        healthText.text = ps.health.ToString();
+        healthText.text = Mathf.CeilToInt(ps.health).ToString();
         healthBar.fillAmount = (float)ps.health/(float)ps.maxHealth;
     }
 

@@ -97,7 +97,7 @@ public class PlayerScript : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        if(damage >= maxHealth)
+        if(damage >= maxHealth && maxHealth == health)
         {
             ui.prevHealth = health;
 
