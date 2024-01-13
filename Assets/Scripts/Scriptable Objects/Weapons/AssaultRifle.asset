@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: AssaultRifle
   m_EditorClassIdentifier: 
   gunName: Assault Rifle
-  damage: 5
+  damage: 8
   critHitMult: 1.25
   maxDistance: 100
-  automatic: 1
+  weaponType: 0
   automaticFireRate: 600
+  projectileSpeed: 0
+  projectilePrefab: {fileID: 0}
   singleShotDelay: 0
   fireSounds:
   - {fileID: 8300000, guid: 34b439bf70b80a6409eadecc6be92d68, type: 3}

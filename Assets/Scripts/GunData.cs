@@ -21,6 +21,8 @@ public class GunData : ScriptableObject
 
     [Header("Weapon Type Data")]
     public GunType weaponType;
+    public GameObject muzzleParticles;
+    public GameObject fireParticles;
     public int automaticFireRate;
     public float projectileSpeed;
     public GameObject projectilePrefab;

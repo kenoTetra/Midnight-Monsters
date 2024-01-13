@@ -17,10 +17,14 @@ public class GunScript : MonoBehaviour
     // References
     Animator animator;
     AudioSource audioSource;
+    Transform p_transform;
+    Transform cam_transform;
 
     void Start()
     {
         animator = GameObject.FindWithTag("Player").GetComponent<Animator>();
+        p_transform = GameObject.FindWithTag("Player").GetComponent<Transform>();
+        cam_transform = GameObject.FindWithTag("MainCamera").GetComponent<Transform>();
         audioSource = GameObject.FindWithTag("GunSound").GetComponent<AudioSource>();
         lastShotTime = gunData.singleShotDelay;
     }
@@ -98,6 +102,7 @@ public class GunScript : MonoBehaviour
     private void OnGunShot()
     {
         animator.SetBool("Fire", true);
+        SpawnParticles();
 
         if(gunData.name != "Melee" || !audioSource.isPlaying)
             audioSource.PlayOneShot(gunData.fireSounds[Random.Range(0, gunData.fireSounds.Count - 1)], .5f);
@@ -111,7 +116,23 @@ public class GunScript : MonoBehaviour
             {
                 GameObject projectileShot = Instantiate(gunData.projectilePrefab, transform.position, transform.rotation * Quaternion.Euler(90, 0, 0));
                 projectileShot.GetComponent<Rigidbody>().AddForce(transform.forward * gunData.projectileSpeed, ForceMode.Impulse);
+                SpawnParticles();
             }
+        }
+    }
+
+    void SpawnParticles()
+    {
+        if(gunData.muzzleParticles != null)
+        {
+            GameObject particles = Instantiate(gunData.muzzleParticles, muzzle.transform.position, gunData.muzzleParticles.transform.rotation, muzzle.transform);
+            Destroy(particles, 1.5f);
+        }
+
+        if(gunData.fireParticles != null)
+        {
+            GameObject particles = Instantiate(gunData.fireParticles, muzzle.transform.position, gunData.fireParticles.transform.rotation * cam_transform.rotation /* p_transform.rotation */);
+            Destroy(particles, 1.5f);
         }
     }
 }

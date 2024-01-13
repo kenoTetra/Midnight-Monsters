@@ -15,6 +15,7 @@ public class HitNumberScript : MonoBehaviour
     public float timeToDestroy = 2f;
     private float destroyCurTime;
     public float randomBounce = 1f;
+    private float randDir() => Random.Range(-randomBounce, randomBounce);
     [HideInInspector] public bool critHit;
     [HideInInspector] public Color damageColor;
     public Color normalColor = Color.red;
@@ -37,14 +38,13 @@ public class HitNumberScript : MonoBehaviour
         initScale = transform.localScale;
 
         // Crit coloring
-        if(critHit)
-            damageColor = critColor;
-        
-        else
-            damageColor = normalColor;
+        damageColor = critHit ? critColor : normalColor;
 
-        // Shoots it off in a random direction kinda cute like :3
-        rb.AddForce(new Vector3(Random.Range(-randomBounce, randomBounce), 1.5f, Random.Range(-randomBounce, randomBounce)), ForceMode.Impulse);
+        // Shoots off damage number in a random direction.
+        rb.AddForce(new Vector3(randDir(), 1.5f, randDir()), ForceMode.Impulse);
+
+        // Destroy timer
+        Destroy(this.gameObject, timeToDestroy);
     }
 
     // Update is called once per frame
@@ -54,15 +54,12 @@ public class HitNumberScript : MonoBehaviour
         if(target != null)
             transform.LookAt(target.transform);
 
-        // Destroy timer
+        // Fade text with countdown of destroy timer.
         if(timeToDestroy > destroyCurTime)
         {
             destroyCurTime += Time.deltaTime;
             hitNumber.color = new Color (damageColor.r, damageColor.g, damageColor.b, (timeToDestroy / destroyCurTime) - 1f);
         }
-
-        else
-            Destroy(this.gameObject);
 
         // Dynamic sizing
         float distance = (target.transform.position - transform.position).magnitude;
@@ -73,10 +70,14 @@ public class HitNumberScript : MonoBehaviour
     // The scrunkly (color fade)
     public void updateDamageText(float damage, bool crit, float critHitMult)
     {
+        // Pass the crit outside of the referenced script.
         critHit = crit;
+
+        // Make sure that the other functions fire first
         Start();
         Update();
 
+        // Pass damage text
         if(crit)
             hitNumber.text = "-" + System.Math.Round((damage * critHitMult),2).ToString();
 

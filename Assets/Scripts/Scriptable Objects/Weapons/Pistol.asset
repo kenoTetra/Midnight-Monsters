@@ -17,8 +17,11 @@ MonoBehaviour:
   critHitMult: 2
   maxDistance: 250
   weaponType: 1
+  muzzleParticles: {fileID: 1760402126283189683, guid: 7ef8cee568a76504290117cb71b2c5e3, type: 3}
+  fireParticles: {fileID: 1760402126283189683, guid: 4a242bbd66f04fe44b20a31c125024f8, type: 3}
   automaticFireRate: 0
   projectileSpeed: 0
+  projectilePrefab: {fileID: 0}
   singleShotDelay: 0.15
   fireSounds:
   - {fileID: 8300000, guid: 6739c01659ad96d47987f4ddee226b36, type: 3}
