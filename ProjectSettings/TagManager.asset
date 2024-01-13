@@ -9,6 +9,7 @@ TagManager:
   - Crit
   - GunSound
   - Ground
+  - DeleteZone
   layers:
   - Default
   - TransparentFX
