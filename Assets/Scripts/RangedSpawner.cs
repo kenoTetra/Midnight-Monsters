@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class RangedSpawner : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class RangedSpawner : MonoBehaviour
     [SerializeField] private float maxTime,minTime;
     [SerializeField] private float maxSpeed,minSpeed;
     [SerializeField] private AudioClip noise;
+    [SerializeField] private AudioMixerGroup mixer;
     float timer,randomTime;
 
     void Start()
@@ -50,6 +52,7 @@ public class RangedSpawner : MonoBehaviour
                 veh_aud.volume = 1f;
                 veh_aud.loop = true;
                 veh_aud.clip = noise;
+                veh_aud.outputAudioMixerGroup = mixer;
                 veh_aud.Play();
             }
 
