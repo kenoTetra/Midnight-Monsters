@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerWallrun : MonoBehaviour
 {
     [Header("Wallrunning")]
+    [SerializeField] private LayerMask WallrunMask;
     [SerializeField] private float wallDistance = .8f;
     [SerializeField] private float minimumJumpHeight = 1f;
     [SerializeField] private float wallJumpForce = 10f;
@@ -56,9 +57,9 @@ public class PlayerWallrun : MonoBehaviour
     void checkWall()
     {
         // Left
-        wallLeft = Physics.Raycast(transform.position, -pm.orientation.right, wallDistance);
-        wallBackLeft = Physics.Raycast(transform.position, (-pm.orientation.right - (pm.orientation.forward/wallrunAngleMod)), wallDistance);
-        wallFrontLeft = Physics.Raycast(transform.position, (-pm.orientation.right + (pm.orientation.forward/wallrunAngleMod)), wallDistance);
+        wallLeft = Physics.Raycast(transform.position, -pm.orientation.right, wallDistance, WallrunMask);
+        wallBackLeft = Physics.Raycast(transform.position, (-pm.orientation.right - (pm.orientation.forward/wallrunAngleMod)), wallDistance, WallrunMask);
+        wallFrontLeft = Physics.Raycast(transform.position, (-pm.orientation.right + (pm.orientation.forward/wallrunAngleMod)), wallDistance, WallrunMask);
 
         // Debug Left
         Debug.DrawRay(transform.position, -pm.orientation.right, Color.green);
@@ -66,9 +67,9 @@ public class PlayerWallrun : MonoBehaviour
         Debug.DrawRay(transform.position, -pm.orientation.right + (pm.orientation.forward/wallrunAngleMod), Color.green);
 
         // Right
-        wallRight = Physics.Raycast(transform.position, pm.orientation.right, wallDistance);
-        wallBackRight = Physics.Raycast(transform.position, pm.orientation.right - (pm.orientation.forward/wallrunAngleMod), wallDistance);
-        wallFrontRight = Physics.Raycast(transform.position, pm.orientation.right + (pm.orientation.forward/wallrunAngleMod), wallDistance);
+        wallRight = Physics.Raycast(transform.position, pm.orientation.right, wallDistance, WallrunMask);
+        wallBackRight = Physics.Raycast(transform.position, pm.orientation.right - (pm.orientation.forward/wallrunAngleMod), wallDistance, WallrunMask);
+        wallFrontRight = Physics.Raycast(transform.position, pm.orientation.right + (pm.orientation.forward/wallrunAngleMod), wallDistance, WallrunMask);
 
         // Debug Right
         Debug.DrawRay(transform.position, pm.orientation.right, Color.green);

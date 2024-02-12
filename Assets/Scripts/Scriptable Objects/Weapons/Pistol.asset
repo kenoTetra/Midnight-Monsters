@@ -25,3 +25,4 @@ MonoBehaviour:
   singleShotDelay: 0.15
   fireSounds:
   - {fileID: 8300000, guid: 6739c01659ad96d47987f4ddee226b36, type: 3}
+  UIImage: {fileID: 21300000, guid: 26cc1bde27a343f48849799d82792af8, type: 3}

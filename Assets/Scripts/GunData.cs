@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [CreateAssetMenu(fileName="Gun", menuName="Weapon/Gun")]
 
@@ -31,4 +32,8 @@ public class GunData : ScriptableObject
 
     [Header("Weapon Sounds")]
     public List<AudioClip> fireSounds = new List<AudioClip>();
+    [Space(5)]
+
+    [Header("Visuals")]
+    public Sprite UIImage;
 }

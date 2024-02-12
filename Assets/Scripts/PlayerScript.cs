@@ -92,7 +92,8 @@ public class PlayerScript : MonoBehaviour
         }
 
         weaponList[alpha-1].SetActive(true);
-        ui.FadeOtherWeapons(alpha);
+        
+        ui.FadeOtherWeapons(alpha, weaponList[alpha-1].GetComponent<GunScript>().gunData);
     }
 
     public void TakeDamage(float damage)

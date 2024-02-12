@@ -26,7 +26,8 @@ public class UIScript : MonoBehaviour
     [Space(5)]
 
     [Header("Weapon UI")]
-    [SerializeField] private List<Image> weapons = new List<Image>();
+    [SerializeField] private Image gunDisplay;
+    [SerializeField] private List<Image> weaponDots = new List<Image>();
     [SerializeField] private Color activeWeaponColor;
     [SerializeField] private Color inactiveWeaponColor;
 
@@ -55,8 +56,12 @@ public class UIScript : MonoBehaviour
             }
         }
         
+        // Update the healthbar.
         healthText.text = Mathf.CeilToInt(ps.health).ToString();
-        healthBar.fillAmount = (float)ps.health/(float)ps.maxHealth;
+        float hpToSet = (float)ps.health/(float)ps.maxHealth;
+
+        // Round to the nearest .1
+        healthBar.fillAmount = (float)Mathf.Round(hpToSet * 10.0f) * 0.1f;
     }
 
     void Update()
@@ -64,8 +69,10 @@ public class UIScript : MonoBehaviour
         if(lerpGood)
         {
             goodLerpTime += Time.deltaTime;
+            float hpToSet = (float)ps.health/(float)ps.maxHealth;
 
             healthBar.color = Color.Lerp(healthBarEffectColor, healthColor, goodLerpTime/.5f);
+            healthEffectBar.fillAmount = (float)Mathf.Round(hpToSet * 10.0f) * 0.1f;
             
             if(goodLerpTime > .5f)
                 lerpGood = false;
@@ -75,10 +82,14 @@ public class UIScript : MonoBehaviour
         {
             badLerpTime += Time.deltaTime;
 
-            var badFillAmm = Mathf.Lerp(prevHealth/ps.maxHealth, ps.health/ps.maxHealth, badLerpTime/1.5f);
+            /// Get hp to set
+            float hpToSet = (float)ps.health/(float)ps.maxHealth;
+
+            // Lerp to it over the course of 1s
+            var badFillAmm = Mathf.Lerp(prevHealth/ps.maxHealth, (float)Mathf.Round(hpToSet * 10.0f) * 0.1f, badLerpTime/1f);
             healthEffectBar.fillAmount = badFillAmm;
             
-            if(badLerpTime > 1.5f)
+            if(badLerpTime > 1.0f)
                 lerpBad = false;
         }
 
@@ -89,16 +100,16 @@ public class UIScript : MonoBehaviour
         }
     }
 
-    public void FadeOtherWeapons(int weaponActive)
+    public void FadeOtherWeapons(int weaponActive, GunData gunData)
     {
-        for(int i = 0; i < weapons.Count; i++)
+        for(int i = 0; i < weaponDots.Count; i++)
         {
-            weapons[i].color = inactiveWeaponColor;
-            weapons[i].gameObject.GetComponentInChildren<TMP_Text>().color = inactiveWeaponColor;
+            weaponDots[i].color = inactiveWeaponColor;
 
         }
 
-        weapons[weaponActive-1].color = activeWeaponColor;
-        weapons[weaponActive-1].gameObject.GetComponentInChildren<TMP_Text>().color = activeWeaponColor;
+        weaponDots[weaponActive-1].color = activeWeaponColor;
+
+        gunDisplay.sprite = gunData.UIImage;
     }
 }
