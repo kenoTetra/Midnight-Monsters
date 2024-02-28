@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,15 +18,40 @@ public class PlayerScript : MonoBehaviour
 
     [Header("Weapons")]
     public List<GameObject> weaponList = new List<GameObject>();
+    [Space(5)]
+
+    [Header("Audio")]
+    [SerializeField] private AudioClip hurtSound;
+    [Space(5)]
+
+    [Header("Hurt VFX")]    
+    [SerializeField] private float fxMaxTime;
+    // Ramp time is included in max time. Keep this in mind.
+    [SerializeField] private float fxRampTime;
+    [SerializeField] private float colorIntensity = 2.11f;
+    [SerializeField] private float colorShift = 1.47f;
+    [SerializeField] private float vramShift = 3.55f;
+    float fxTimer;
+    bool fxDisplay;
 
     // References
-    UIScript ui;
+    [SerializeField] private UIScript ui;
     BasicPlayerMovement pm;
+    AudioSource aud;
+    ShaderEffect_BleedingColors bleedingColors;
+    ShaderEffect_CorruptedVram corruptedVram;
     
     void Start()
     {
+        // Shaders
+        bleedingColors = GetComponentInChildren<ShaderEffect_BleedingColors>();
+        corruptedVram = GetComponentInChildren<ShaderEffect_CorruptedVram>();
+
         ui = GetComponentInChildren<UIScript>();
+
+        // Other references
         pm = GetComponent<BasicPlayerMovement>();
+        aud = GetComponent<AudioSource>();
         startPoint = transform.position;
 
         //startYScale = playerObj.transform.localScale.y;
@@ -42,6 +69,11 @@ public class PlayerScript : MonoBehaviour
             {
                 Scene scene = SceneManager.GetActiveScene();
                 SceneManager.LoadScene(scene.name);
+            }
+
+            if(fxDisplay)
+            {
+                ShowVFX();
             }
         }
     }
@@ -103,6 +135,9 @@ public class PlayerScript : MonoBehaviour
             ui.prevHealth = health;
 
             health = 1;
+
+            fxDisplay = true;
+            PlaySound(hurtSound);
         }
 
         else
@@ -111,6 +146,9 @@ public class PlayerScript : MonoBehaviour
             health = Mathf.Clamp(health, 0f, maxHealth);
 
             ui.prevHealth = health + damage;
+
+            fxDisplay= true;
+            PlaySound(hurtSound);
         }
 
         ui.updateUI();
@@ -124,5 +162,58 @@ public class PlayerScript : MonoBehaviour
 
         ui.updateUI();
         ui.lerpGood = true;
+    }
+
+    public void ShowVFX()
+    {
+        // Run a timer.
+        fxTimer += Time.deltaTime;
+
+        // For the ramp, make the visuals appear gradually.
+        if(fxTimer < fxRampTime)
+        {
+            // Enable VFX display.
+            bleedingColors.enabled = true;
+            corruptedVram.enabled = true;
+
+            float rampPerc = (fxTimer/fxRampTime);
+
+            bleedingColors.intensity = colorIntensity * rampPerc;
+            bleedingColors.shift = colorShift * rampPerc;
+            corruptedVram.shift = vramShift * rampPerc;
+        }
+
+        // After the ramp, scale the effect back down.
+        else if(fxTimer < fxMaxTime)
+        {
+            // Get the float as a percentage ramping downwards.
+            float totalPerc = 1-((fxTimer-fxRampTime)/(fxMaxTime-fxRampTime));
+
+            bleedingColors.intensity = colorIntensity * totalPerc;
+            bleedingColors.shift = colorShift * totalPerc;
+            corruptedVram.shift = vramShift * totalPerc;
+        }
+        
+        // When the display time is up...
+        else
+        {
+            // Disable VFX display.
+            bleedingColors.enabled = false;
+            corruptedVram.enabled = false;
+
+            // Set intensities to zero.
+            bleedingColors.intensity = 0f;
+            bleedingColors.shift = 0f;
+            corruptedVram.shift = 0f;
+
+            // Reset timer, and stop displaying VFX.
+            fxTimer = 0f;
+            fxDisplay = false;
+        }
+    }
+
+    public void PlaySound(AudioClip sound)
+    {
+        aud.PlayOneShot(sound, .5f);
     }
 }

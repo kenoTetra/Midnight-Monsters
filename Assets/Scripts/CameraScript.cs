@@ -16,6 +16,7 @@ public class CameraScript : MonoBehaviour
     public float camTilt;
     public float wallEffectTime = 10f;
     public float tilt { get; set; }
+    [Space(5)]
 
     public Transform orientation;
     private PlayerScript ps;

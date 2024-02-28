@@ -8,7 +8,7 @@ public interface IDamagable
 
     public static void spawnHitNumber(float damage, bool crit, float critHitMult, Vector3 spawnLoc)
     {
-        GameObject curHitNumber = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/HitCanvas"), spawnLoc, Quaternion.identity);
+        GameObject curHitNumber = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Gameplay/HitCanvas"), spawnLoc, Quaternion.identity);
         curHitNumber.GetComponent<HitNumberScript>().updateDamageText(damage, crit, critHitMult);
     }
 }

@@ -14,6 +14,8 @@ public class BasicPlayerMovement : MonoBehaviour
     [Header("Movement")]
     public float speed = 10f;
     [SerializeField] private float artificalGravity = -3f;
+    [SerializeField] private GameObject speedLines;
+    [SerializeField] private float speedRequiredVFX = 6f;
 
     // Slope Handling
     [SerializeField] private float maxSlopeAngle;
@@ -35,6 +37,8 @@ public class BasicPlayerMovement : MonoBehaviour
     [HideInInspector] public PauseHandler pauseHandler;
     [HideInInspector] public Rigidbody rb;
     [HideInInspector] public UIScript ui;
+    Transform fxVisuals;
+    GameObject spawnedFX;
     PlayerCharges pc;
     PlayerSliding ps;
     PlayerWallrun pr;
@@ -48,6 +52,7 @@ public class BasicPlayerMovement : MonoBehaviour
         pc = GetComponent<PlayerCharges>();
         ps = GetComponent<PlayerSliding>();
         pr = GetComponent<PlayerWallrun>();
+        fxVisuals = transform.Find("Camera/FX Visuals");
         audioSource = GetComponent<AudioSource>();
         orientation = GetComponent<Transform>();
         rb.freezeRotation = true;
@@ -64,6 +69,7 @@ public class BasicPlayerMovement : MonoBehaviour
         
         CheckGrounded();
         FootstepSound();
+        VFXDisplay();
     }
 
     void FixedUpdate()
@@ -137,6 +143,26 @@ public class BasicPlayerMovement : MonoBehaviour
         {
             // Add with the current speed of the player divided by normal max speed. incase you're zoomin'
             lastFootstepTime += Time.deltaTime * rb.velocity.magnitude/speed;
+        }
+    }
+
+    void VFXDisplay()
+    {
+        if(rb.velocity.magnitude > speedRequiredVFX && spawnedFX != null)
+        {
+            var emission = spawnedFX.GetComponent<ParticleSystem>().emission;
+            emission.rateOverTime = 10f * (rb.velocity.magnitude/speedRequiredVFX);
+        }
+
+        else if(rb.velocity.magnitude > speedRequiredVFX && spawnedFX == null)
+        {
+            spawnedFX = Instantiate(speedLines, fxVisuals);
+        }
+
+        else if(spawnedFX != null)
+        {
+            spawnedFX.GetComponent<ParticleSystem>().enableEmission = false;
+            Destroy(spawnedFX, .4f);
         }
     }
 }
