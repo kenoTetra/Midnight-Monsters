@@ -13,6 +13,11 @@ public class MainMenuScript : MonoBehaviour
         cam_anim.SetTrigger("ExitGame");
         allScene.SetTrigger("ExitGame");
     }
+    
+    public void StartGame()
+    {
+        allScene.SetTrigger("StartGame");
+    }
 
     public void NextScene()
     {

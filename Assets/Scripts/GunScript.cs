@@ -50,15 +50,12 @@ public class GunScript : MonoBehaviour
            ProjectileShoot();
         }
 
-        // Reset the time between the shots.
-        lastShotTime += Time.deltaTime;
         Debug.DrawRay(bulletPos.position, bulletPos.forward, Color.red);
     }
 
     // Single shot delay OR shots fired every second divided by a second (ala, 600 rpm is 10rps, which is .1s between shots)
-    private bool CanShoot() => lastShotTime > gunData.singleShotDelay && gunData.weaponType == GunData.GunType.SingleShot
-     || lastShotTime > 1f / (gunData.automaticFireRate / 60f) && gunData.weaponType == GunData.GunType.Automatic
-     || lastShotTime > gunData.singleShotDelay && gunData.weaponType == GunData.GunType.Projectile;
+    private bool CanShoot() => lastShotTime > gunData.singleShotDelay && gunData.weaponType != GunData.GunType.Automatic
+     || lastShotTime > 1f / (gunData.automaticFireRate / 60f) && gunData.weaponType == GunData.GunType.Automatic;
 
     private void Shoot()
     {
@@ -94,15 +91,15 @@ public class GunScript : MonoBehaviour
                 
             }
 
-            lastShotTime = 0;
             OnGunShot();
         }
     }
 
     private void OnGunShot()
     {
-        animator.SetBool("Fire", true);
+        animator.SetTrigger("Fire");
         SpawnParticles();
+        lastShotTime = 0;
 
         if(gunData.name != "Melee" || !audioSource.isPlaying)
             audioSource.PlayOneShot(gunData.fireSounds[Random.Range(0, gunData.fireSounds.Count - 1)], .5f);
@@ -116,7 +113,8 @@ public class GunScript : MonoBehaviour
             {
                 GameObject projectileShot = Instantiate(gunData.projectilePrefab, transform.position, transform.rotation * Quaternion.Euler(90, 0, 0));
                 projectileShot.GetComponent<Rigidbody>().AddForce(transform.forward * gunData.projectileSpeed, ForceMode.Impulse);
-                SpawnParticles();
+                
+                OnGunShot();
             }
         }
     }

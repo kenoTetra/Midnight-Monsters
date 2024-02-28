@@ -40,6 +40,7 @@ public class PlayerScript : MonoBehaviour
     AudioSource aud;
     ShaderEffect_BleedingColors bleedingColors;
     ShaderEffect_CorruptedVram corruptedVram;
+    Animator anim;
     
     void Start()
     {
@@ -47,11 +48,13 @@ public class PlayerScript : MonoBehaviour
         bleedingColors = GetComponentInChildren<ShaderEffect_BleedingColors>();
         corruptedVram = GetComponentInChildren<ShaderEffect_CorruptedVram>();
 
+        // Ui
         ui = GetComponentInChildren<UIScript>();
 
         // Other references
         pm = GetComponent<BasicPlayerMovement>();
         aud = GetComponent<AudioSource>();
+        anim = GetComponent<Animator>();
         startPoint = transform.position;
 
         //startYScale = playerObj.transform.localScale.y;
@@ -75,6 +78,12 @@ public class PlayerScript : MonoBehaviour
             {
                 ShowVFX();
             }
+        }
+
+        // Weapon cooldowns when not equipped
+        foreach(GameObject weapon in weaponList)
+        {
+            weapon.GetComponent<GunScript>().lastShotTime += Time.deltaTime;
         }
     }
 
@@ -124,7 +133,8 @@ public class PlayerScript : MonoBehaviour
         }
 
         weaponList[alpha-1].SetActive(true);
-        
+        anim.SetTrigger("Select New");
+
         ui.FadeOtherWeapons(alpha, weaponList[alpha-1].GetComponent<GunScript>().gunData);
     }
 
